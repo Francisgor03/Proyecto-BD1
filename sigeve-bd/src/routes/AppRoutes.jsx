@@ -4,6 +4,7 @@ import DashboardPage from '../pages/Dashboard/DashboardPage';
 import Customers from '../pages/Customers';
 import Orders from '../pages/Orders';
 import Products from '../pages/Products';
+import Suppliers from '../pages/Suppliers';
 
 
 export default function AppRoutes() {
@@ -15,6 +16,7 @@ export default function AppRoutes() {
           <Route path='/customers' element={<Customers />} />
           <Route path='/orders' element={<Orders />} />
           <Route path='/products' element={<Products />} />
+          <Route path='/suppliers' element={<Suppliers />} />
         </Route>
       </Routes>
     </BrowserRouter>
