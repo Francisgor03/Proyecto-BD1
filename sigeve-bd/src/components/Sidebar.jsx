@@ -8,7 +8,10 @@ export default function Sidebar() {
 
   const menu = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' }
+    { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
+    { text: 'Ordenes', icon: <PeopleIcon />, path: '/orders' },
+    { text: 'Productos', icon: <PeopleIcon />, path: '/products' },
+    { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' }
   ];
 
   return (

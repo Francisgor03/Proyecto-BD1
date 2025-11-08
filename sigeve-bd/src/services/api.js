@@ -41,4 +41,28 @@ export const customerApi = {
   remove: id => api.delete(`/customers/${id}`)
 };
 
+export const orderApi = {
+  getAll: (page = 0, size = 5) => api.get(`/orders?page=${page}&size=${size}`),
+  getById: id => api.get(`/orders/${id}`),
+  create: data => api.post('/orders', data),
+  update: (id, data) => api.put(`/orders/${id}`, data),
+  remove: id => api.delete(`/orders/${id}`)
+};
+
+export const productApi = {
+  getAll: (page = 0, size = 5) => api.get(`/products?page=${page}&size=${size}`),
+  getById: id => api.get(`/products/${id}`),
+  create: data => api.post('/products', data),
+  update: (id, data) => api.put(`/products/${id}`, data),
+  remove: id => api.delete(`/products/${id}`)
+};
+
+export const supplierApi = {
+  getAll: (page = 0, size = 5) => api.get(`/suppliers?page=${page}&size=${size}`),
+  getById: id => api.get(`/suppliers/${id}`),
+  create: data => api.post('/suppliers', data),
+  update: (id, data) => api.put(`/suppliers/${id}`, data),
+  remove: id => api.delete(`/suppliers/${id}`)
+};
+
 export default api;
