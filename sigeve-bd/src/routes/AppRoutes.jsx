@@ -3,6 +3,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 import Customers from '../pages/Customers';
 import Orders from '../pages/Orders';
+import Products from '../pages/Products';
 
 
 export default function AppRoutes() {
@@ -13,6 +14,7 @@ export default function AppRoutes() {
           <Route path='/' element={<DashboardPage />} />
           <Route path='/customers' element={<Customers />} />
           <Route path='/orders' element={<Orders />} />
+          <Route path='/products' element={<Products />} />
         </Route>
       </Routes>
     </BrowserRouter>

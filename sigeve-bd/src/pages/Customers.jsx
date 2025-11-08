@@ -101,7 +101,7 @@ export default function Customers() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Nombrae</TableCell>
+              <TableCell>Nombre</TableCell>
               <TableCell>Compañía</TableCell>
               <TableCell>Ciudad</TableCell>
               <TableCell>Teléfono</TableCell>

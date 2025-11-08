@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { orderApi } from '../services/api';
+import { productApi } from '../services/api';
 import {
     Box,
     Typography,
@@ -18,33 +18,33 @@ import {
     Stack
 } from '@mui/material';
 import { Edit, Trash } from 'lucide-react';
-import FormOrder from '../components/orders/FormOrder';
+import FormProduct from '../components/products/FormProduct';
 
-export default function Orders() {
-  const [orders, setOrders] = useState([]);
+export default function Products() {
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [openForm, setOpenForm] = useState(false);
-  const [orderToEdit, setOrderToEdit] = useState(null);
+  const [productToEdit, setProductToEdit] = useState(null);
 
-  const fetchOrders = async (pageNum = 0) => {
+  const fetchProducts = async (pageNum = 0) => {
     setLoading(true);
     try {
-      const response = await orderApi.getAll(pageNum, 10);
-      setOrders(response.data.content);
+      const response = await productApi.getAll(pageNum, 10);
+      setProducts(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (err) {
       console.error(err);
-      setError('Error al cargar los ordenes');
+      setError('Error al cargar los productos');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders(page);
+    fetchProducts(page);
   }, [page]);
 
   const handlePageChange = (event, value) => {
@@ -52,22 +52,22 @@ export default function Orders() {
   };
 
   const handleNew = () => {
-    setOrderToEdit(null);
+    setProductToEdit(null);
     setOpenForm(true);
   };
 
-  const handleEdit = order => {
-    setOrderToEdit(order);
+  const handleEdit = product => {
+    setProductToEdit(product);
     setOpenForm(true);
   };
 
   const handleDelete = async id => {
-    if (window.confirm('¿Seguro que deseas eliminar esta orden?')) {
+    if (window.confirm('¿Seguro que deseas eliminar este producto?')) {
       try {
-        await orderApi.remove(id);
-        fetchOrders(page);
+        await productApi.remove(id);
+        fetchProducts(page);
       } catch (err) {
-        console.error('Error al eliminar esta orden:', err);
+        console.error('Error al eliminar este producto:', err);
       }
     }
   };
@@ -91,7 +91,7 @@ export default function Orders() {
   return (
     <Box p={3}>
       <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h5'>Lista de Ordenes</Typography>
+        <Typography variant='h5'>Lista de Productos</Typography>
         <Button variant='contained' color='primary' onClick={handleNew}>
           Nuevo
         </Button>
@@ -101,26 +101,30 @@ export default function Orders() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de Orden</TableCell>
-              <TableCell>Nombre Envio</TableCell>
-              <TableCell>Dirreccion Envio</TableCell>
-              <TableCell>Ciudad Envio</TableCell>
-              <TableCell>Region Envio</TableCell>
-              <TableCell>Codigo Postal Envio</TableCell>
-              <TableCell>Pais Envio</TableCell>
+              <TableCell>Nombre del Producto</TableCell>
+              <TableCell>Id de Proveedor</TableCell>
+              <TableCell>Id de Categoría</TableCell>
+              <TableCell>Cantidad por Unidad</TableCell>
+              <TableCell>Precio por Unidad</TableCell>
+              <TableCell>Unidades en Stock</TableCell>
+              <TableCell>Unidades en Pedido</TableCell>
+              <TableCell>Nivel de Reorden</TableCell>
+              <TableCell>Descontinuado</TableCell>
               <TableCell align='center'>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map(o => (
-              <TableRow key={o.id}>
-                <TableCell>{o.orderDate}</TableCell>
-                <TableCell>{o.shipName}</TableCell>
-                <TableCell>{o.shipAddress}</TableCell>
-                <TableCell>{o.shipCity}</TableCell>
-                <TableCell>{o.shipRegion}</TableCell>
-                <TableCell>{o.shipPostalCode}</TableCell>
-                <TableCell>{o.shipCountry}</TableCell>
+            {products.map(p => (
+              <TableRow key={p.id}>
+                <TableCell>{p.productName}</TableCell>
+                <TableCell>{p.supplierId}</TableCell>
+                <TableCell>{p.categoryId}</TableCell>
+                <TableCell>{p.quantityPerUnit}</TableCell>
+                <TableCell>{p.unitPrice}</TableCell>
+                <TableCell>{p.unitsInStock}</TableCell>
+                <TableCell>{p.unitsOnOrder}</TableCell>
+                <TableCell>{p.reorderLevel}</TableCell>
+                <TableCell>{p.discontinued ? 'Sí' : 'No'}</TableCell>
                 <TableCell align='center'>
                   <Stack direction='row' spacing={1} justifyContent='center'>
                     <IconButton color='primary' onClick={() => handleEdit(o)}>
@@ -142,11 +146,11 @@ export default function Orders() {
       </Box>
 
       {/* Modal de Formulario */}
-      <FormOrder
+      <FormProduct
         open={openForm}
         onClose={() => setOpenForm(false)}
-        orderToEdit={orderToEdit}
-        onSave={() => fetchOrders(page)}
+        productToEdit={productToEdit}
+        onSave={() => fetchProducts(page)}
       />
     </Box>
   );
