@@ -127,10 +127,10 @@ export default function Products() {
                 <TableCell>{p.discontinued ? 'Sí' : 'No'}</TableCell>
                 <TableCell align='center'>
                   <Stack direction='row' spacing={1} justifyContent='center'>
-                    <IconButton color='primary' onClick={() => handleEdit(o)}>
+                    <IconButton color='primary' onClick={() => handleEdit(p)}>
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(o.id)}>
+                    <IconButton color='error' onClick={() => handleDelete(p.id)}>
                       <Trash size={18} />
                     </IconButton>
                   </Stack>
