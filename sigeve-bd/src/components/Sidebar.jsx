@@ -11,7 +11,8 @@ export default function Sidebar() {
     { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
     { text: 'Ordenes', icon: <PeopleIcon />, path: '/orders' },
     { text: 'Productos', icon: <PeopleIcon />, path: '/products' },
-    { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' }
+    { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' },
+    { text: 'Categories', icon: <PeopleIcon />, path: '/categories' }
   ];
 
   return (
