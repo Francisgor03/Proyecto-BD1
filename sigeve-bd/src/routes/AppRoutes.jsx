@@ -6,7 +6,8 @@ import Orders from '../pages/Orders';
 import Products from '../pages/Products';
 import Suppliers from '../pages/Suppliers';
 import Categories from '../pages/Categories';
-
+import Shippers from '../pages/Shippers';
+S
 
 export default function AppRoutes() {
   return (
@@ -19,6 +20,8 @@ export default function AppRoutes() {
           <Route path='/products' element={<Products />} />
           <Route path='/suppliers' element={<Suppliers />} />
           <Route path='/categories' element={<Categories />} />
+          <Route path='/shippers' element={<Shippers />} />
+          
         </Route>
       </Routes>
     </BrowserRouter>

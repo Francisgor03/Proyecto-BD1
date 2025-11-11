@@ -12,7 +12,8 @@ export default function Sidebar() {
     { text: 'Ordenes', icon: <PeopleIcon />, path: '/orders' },
     { text: 'Productos', icon: <PeopleIcon />, path: '/products' },
     { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' },
-    { text: 'Categories', icon: <PeopleIcon />, path: '/categories' }
+    { text: 'Categories', icon: <PeopleIcon />, path: '/categories' },
+    {text: 'Remitente', icon: <PeopleIcon />, path: '/shippers'}
   ];
 
   return (

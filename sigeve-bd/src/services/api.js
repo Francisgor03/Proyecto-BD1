@@ -73,4 +73,12 @@ export const categoryApi = {
   remove: id => api.delete(`/categories/${id}`)
 };
 
+export const shipperApi = {
+  getAll: (page = 0, size = 5) => api.get(`/shippers?page=${page}&size=${size}`),
+  getById: id => api.get(`/shippers/${id}`),
+  create: data => api.post('/shippers', data),
+  update: (id, data) => api.put(`/shippers/${id}`, data),
+  remove: id => api.delete(`/shippers/${id}`)
+};
+
 export default api;
