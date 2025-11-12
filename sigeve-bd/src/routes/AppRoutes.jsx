@@ -7,7 +7,7 @@ import Products from '../pages/Products';
 import Suppliers from '../pages/Suppliers';
 import Categories from '../pages/Categories';
 import Shippers from '../pages/Shippers';
-S
+
 
 export default function AppRoutes() {
   return (
