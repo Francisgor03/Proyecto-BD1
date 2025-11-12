@@ -12,23 +12,23 @@ import { territoryApi } from '../../services/api';
 
 export default function FormTerritories({ open, onClose, territoryToEdit, onSave }) {
   const [form, setForm] = useState({
-    territoryID: '',
+    id: '',
     territoryDescription: '',
-    regionID: ''
+    regionId: ''
   });
 
   useEffect(() => {
     if (territoryToEdit) {
       setForm({
-        territoryID: territoryToEdit.territoryID || '',
+        id: territoryToEdit.id || '',
         territoryDescription: territoryToEdit.territoryDescription || '',
-        regionID: territoryToEdit.regionID || ''
+        regionId: territoryToEdit.regionId || ''
       });
     } else {
       setForm({
-        territoryID: '',
+        id: '',
         territoryDescription: '',
-        regionID: ''
+        regionId: ''
       });
     }
   }, [territoryToEdit]);
@@ -41,7 +41,7 @@ export default function FormTerritories({ open, onClose, territoryToEdit, onSave
     e.preventDefault();
     try {
       if (territoryToEdit) {
-        await territoryApi.update(form.territoryID, form);
+        await territoryApi.update(form.id, form);
       } else {
         await territoryApi.create(form);
       }
@@ -59,17 +59,19 @@ export default function FormTerritories({ open, onClose, territoryToEdit, onSave
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} mt={1}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name='territoryID'
-                label='ID del Territorio'
-                value={form.territoryID}
-                onChange={handleChange}
-                required
-                disabled={!!territoryToEdit} // Bloquear el ID si estás editando
-              />
-            </Grid>
+            {territoryToEdit && (
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name='id'
+                  label='ID del Territorio'
+                  value={form.id}
+                  onChange={handleChange}
+                  required
+                  disabled
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <TextField
@@ -85,9 +87,9 @@ export default function FormTerritories({ open, onClose, territoryToEdit, onSave
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='regionID'
+                name='regionId'
                 label='ID de la Región'
-                value={form.regionID}
+                value={form.regionId}
                 onChange={handleChange}
                 required
               />
@@ -107,3 +109,4 @@ export default function FormTerritories({ open, onClose, territoryToEdit, onSave
     </Dialog>
   );
 }
+

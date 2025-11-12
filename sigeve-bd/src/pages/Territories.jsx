@@ -109,16 +109,16 @@ export default function Territories() {
           </TableHead>
           <TableBody>
             {territories.map((t) => (
-              <TableRow key={t.territoryID}>
-                <TableCell>{t.territoryID}</TableCell>
+              <TableRow key={t.id}>
+                <TableCell>{t.id}</TableCell>
                 <TableCell>{t.territoryDescription}</TableCell>
-                <TableCell>{t.region?.regionID || t.regionID}</TableCell>
+                <TableCell>{t.regionId}</TableCell>
                 <TableCell align="center">
                   <Stack direction="row" spacing={1} justifyContent="center">
                     <IconButton color="primary" onClick={() => handleEdit(t)}>
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton color="error" onClick={() => handleDelete(t.territoryID)}>
+                    <IconButton color="error" onClick={() => handleDelete(t.id)}>
                       <Trash size={18} />
                     </IconButton>
                   </Stack>
@@ -140,7 +140,7 @@ export default function Territories() {
       </Box>
 
       {/* 🔹 Modal Formulario */}
-      <FormTerritory
+      <FormTerritories
         open={openForm}
         onClose={() => setOpenForm(false)}
         territoryToEdit={territoryToEdit}
@@ -149,3 +149,4 @@ export default function Territories() {
     </Box>
   );
 }
+
