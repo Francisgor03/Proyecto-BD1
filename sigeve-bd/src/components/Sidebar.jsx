@@ -14,7 +14,7 @@ export default function Sidebar() {
   { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' },
   { text: 'Categorías', icon: <PeopleIcon />, path: '/categories' },
   { text: 'Remitentes', icon: <PeopleIcon />, path: '/shippers' },
-  { text: 'Regiones', icon: <PeopleIcon />, path: '/regions' },
+  { text: 'Regiones', icon: <PeopleIcon />, path: '/region' },
   { text: 'Territorios', icon: <PeopleIcon />, path: '/territories' }
 ];
 

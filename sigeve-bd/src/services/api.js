@@ -82,12 +82,13 @@ export const shipperApi = {
 };
 
 export const regionApi = {
-  getAll: (page = 0, size = 5) => api.get(`/regions?page=${page}&size=${size}`),
-  getById: id => api.get(`/regions/${id}`),
-  create: data => api.post('/regions', data),
-  update: (id, data) => api.put(`/regions/${id}`, data),
-  remove: id => api.delete(`/regions/${id}`)
+  getAll: (page = 0, size = 5) => api.get(`/region?page=${page}&size=${size}`),
+  getById: id => api.get(`/region/${id}`),
+  create: data => api.post('/region', data),
+  update: (id, data) => api.put(`/region/${id}`, data),
+  remove: id => api.delete(`/region/${id}`)
 };
+
 
 export const territoryApi = {
   getAll: (page = 0, size = 5) => api.get(`/territories?page=${page}&size=${size}`),

@@ -108,15 +108,15 @@ export default function Regions() {
           </TableHead>
           <TableBody>
             {regions.map(r => (
-              <TableRow key={r.regionID}>
-                <TableCell>{r.regionID}</TableCell>
+              <TableRow key={r.id}>
+                <TableCell>{r.id}</TableCell>
                 <TableCell>{r.regionDescription}</TableCell>
                 <TableCell align='center'>
                   <Stack direction='row' spacing={1} justifyContent='center'>
                     <IconButton color='primary' onClick={() => handleEdit(r)}>
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(r.regionID)}>
+                    <IconButton color='error' onClick={() => handleDelete(r.id)}>
                       <Trash size={18} />
                     </IconButton>
                   </Stack>
@@ -137,7 +137,7 @@ export default function Regions() {
         />
       </Box>
 
-      {/* 🔹 Modal de Formulario */}
+      {/* Modal del formulario */}
       <FormRegion
         open={openForm}
         onClose={() => setOpenForm(false)}
