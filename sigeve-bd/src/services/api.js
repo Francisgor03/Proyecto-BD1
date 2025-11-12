@@ -81,4 +81,20 @@ export const shipperApi = {
   remove: id => api.delete(`/shippers/${id}`)
 };
 
+export const regionApi = {
+  getAll: (page = 0, size = 5) => api.get(`/regions?page=${page}&size=${size}`),
+  getById: id => api.get(`/regions/${id}`),
+  create: data => api.post('/regions', data),
+  update: (id, data) => api.put(`/regions/${id}`, data),
+  remove: id => api.delete(`/regions/${id}`)
+};
+
+export const territoryApi = {
+  getAll: (page = 0, size = 5) => api.get(`/territories?page=${page}&size=${size}`),
+  getById: id => api.get(`/territories/${id}`),
+  create: data => api.post('/territories', data),
+  update: (id, data) => api.put(`/territories/${id}`, data),
+  remove: id => api.delete(`/territories/${id}`)
+};
+
 export default api;

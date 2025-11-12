@@ -7,7 +7,8 @@ import Products from '../pages/Products';
 import Suppliers from '../pages/Suppliers';
 import Categories from '../pages/Categories';
 import Shippers from '../pages/Shippers';
-
+import Regions from '../pages/Region';
+import Territories from '../pages/Territories';
 
 export default function AppRoutes() {
   return (
@@ -21,7 +22,8 @@ export default function AppRoutes() {
           <Route path='/suppliers' element={<Suppliers />} />
           <Route path='/categories' element={<Categories />} />
           <Route path='/shippers' element={<Shippers />} />
-          
+          <Route path='/region' element={<Regions />} />
+          <Route path='/territories' element={<Territories />} />
         </Route>
       </Routes>
     </BrowserRouter>

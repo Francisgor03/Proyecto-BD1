@@ -7,14 +7,17 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const menu = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
-    { text: 'Ordenes', icon: <PeopleIcon />, path: '/orders' },
-    { text: 'Productos', icon: <PeopleIcon />, path: '/products' },
-    { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' },
-    { text: 'Categories', icon: <PeopleIcon />, path: '/categories' },
-    {text: 'Remitente', icon: <PeopleIcon />, path: '/shippers'}
-  ];
+  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
+  { text: 'Ordenes', icon: <PeopleIcon />, path: '/orders' },
+  { text: 'Productos', icon: <PeopleIcon />, path: '/products' },
+  { text: 'Proveedores', icon: <PeopleIcon />, path: '/suppliers' },
+  { text: 'Categorías', icon: <PeopleIcon />, path: '/categories' },
+  { text: 'Remitentes', icon: <PeopleIcon />, path: '/shippers' },
+  { text: 'Regiones', icon: <PeopleIcon />, path: '/regions' },
+  { text: 'Territorios', icon: <PeopleIcon />, path: '/territories' }
+];
+
 
   return (
     <Box

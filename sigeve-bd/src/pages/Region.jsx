@@ -18,7 +18,7 @@ import {
   Stack
 } from '@mui/material';
 import { Edit, Trash } from 'lucide-react';
-import FormRegion from '../components/regions/FormRegion';
+import FormRegion from '../components/Region/FormRegion';
 
 export default function Regions() {
   const [regions, setRegions] = useState([]);
