@@ -12,7 +12,6 @@ import { regionApi } from '../../services/api';
 
 export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
   const [form, setForm] = useState({
-    id: '',
     regionDescription: ''
   });
 
@@ -20,33 +19,30 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
   useEffect(() => {
     if (regionToEdit) {
       setForm({
-        id: regionToEdit.id,
         regionDescription: regionToEdit.regionDescription
       });
     } else {
       setForm({
-        id: '',
         regionDescription: ''
       });
     }
   }, [regionToEdit]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (regionToEdit) {
-        // Actualizar
+        // Actualizar → aquí sí se usa el ID
         await regionApi.update(regionToEdit.id, {
           regionDescription: form.regionDescription
         });
       } else {
-        // Crear
+        // Crear → NO SE ENVÍA ID
         await regionApi.create({
-          id: form.id,
           regionDescription: form.regionDescription
         });
       }
@@ -59,23 +55,13 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{regionToEdit ? 'Editar Región' : 'Agregar Región'}</DialogTitle>
+      <DialogTitle>
+        {regionToEdit ? 'Editar Región' : 'Agregar Región'}
+      </DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} mt={1}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name="id"
-                label="ID de la Región"
-                value={form.id}
-                onChange={handleChange}
-                required
-                disabled={!!regionToEdit} // no editable si estás editando
-              />
-            </Grid>
-
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -86,6 +72,7 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
                 required
               />
             </Grid>
+
           </Grid>
         </form>
       </DialogContent>
