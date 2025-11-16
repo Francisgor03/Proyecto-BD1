@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { orderApi } from '../services/api';
+import React, { useEffect, useState, useCallback } from "react";
+import { orderApi } from "../services/api";
 import {
   Box,
   Typography,
@@ -17,10 +17,10 @@ import {
   IconButton,
   Stack,
   TextField,
-  InputAdornment
-} from '@mui/material';
-import { Edit, Trash, Search } from 'lucide-react';
-import FormOrder from '../components/orders/FormOrder';
+  InputAdornment,
+} from "@mui/material";
+import { Edit, Trash, Search } from "lucide-react";
+import FormOrder from "../components/orders/FormOrder";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -32,21 +32,24 @@ export default function Orders() {
   const [openForm, setOpenForm] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState(null);
 
-  const fetchOrders = useCallback(async (pageNum = 0, size = rowsPerPage) => {
-    setLoading(true);
-    try {
-      // Llama al backend con paginación (page, size)
-      const response = await orderApi.getAll(pageNum, size);
-      const data = response.data || {};
-      setOrders(data.content || []);
-      setTotalElements(data.totalElements ?? ((data.totalPages ?? 0) * size));
-    } catch (err) {
-      console.error(err);
-      setError('Error al cargar las órdenes');
-    } finally {
-      setLoading(false);
-    }
-  }, [rowsPerPage]);
+  const fetchOrders = useCallback(
+    async (pageNum = 0, size = rowsPerPage) => {
+      setLoading(true);
+      try {
+        // Llama al backend con paginación (page, size)
+        const response = await orderApi.getAll(pageNum, size);
+        const data = response.data || {};
+        setOrders(data.content || []);
+        setTotalElements(data.totalElements ?? (data.totalPages ?? 0) * size);
+      } catch (err) {
+        console.error(err);
+        setError("Error al cargar las órdenes");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [rowsPerPage]
+  );
 
   useEffect(() => {
     fetchOrders(page, rowsPerPage);
@@ -67,25 +70,30 @@ export default function Orders() {
     setOpenForm(true);
   };
 
-  const handleEdit = order => {
+  const handleEdit = (order) => {
     setOrderToEdit(order);
     setOpenForm(true);
   };
 
-  const handleDelete = async id => {
-    if (window.confirm('¿Seguro que deseas eliminar esta orden?')) {
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Seguro que deseas eliminar esta orden?")) {
       try {
         await orderApi.remove(id);
         fetchOrders(page);
       } catch (err) {
-        console.error('Error al eliminar esta orden:', err);
+        console.error("Error al eliminar esta orden:", err);
       }
     }
   };
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="70vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -94,7 +102,7 @@ export default function Orders() {
   if (error) {
     return (
       <Box m={2}>
-        <Alert severity='error'>{error}</Alert>
+        <Alert severity="error">{error}</Alert>
       </Box>
     );
   }
@@ -102,57 +110,161 @@ export default function Orders() {
   return (
     <Box p={3}>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
-        <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography variant='h5'>Listado de Ordenes</Typography>
+            <Typography variant="h5">Listado de Ordenes</Typography>
           </Box>
 
-          <Box display='flex' gap={2} alignItems='center'>
-            <Button variant='contained' color='primary' onClick={handleNew}>
+          <Box display="flex" gap={2} alignItems="center">
+            <Button variant="contained" color="primary" onClick={handleNew}>
               Agregar Orden
             </Button>
           </Box>
         </Box>
       </Paper>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 4, mt: 2 }}>
+      <TableContainer
+        component={Paper}
+        sx={{ borderRadius: 3, boxShadow: 4, mt: 2 }}
+      >
         <Table>
           <TableHead>
-            <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Fecha de Orden</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Nombre Envio</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Dirreccion Envio</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Ciudad Envio</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Region Envio</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Codigo Postal Envio</TableCell>
-              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Pais Envio</TableCell>
-              <TableCell align='center' sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Acciones</TableCell>
+            <TableRow
+              sx={{
+                background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)",
+              }}
+            >
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Fecha de Orden
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Nombre Envio
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Dirreccion Envio
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Ciudad Envio
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Region Envio
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Codigo Postal Envio
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Pais Envio
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  border: 0,
+                }}
+              >
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {
-              orders.slice(0, 10).map(o => (
-                <TableRow key={o.id} sx={{ transition: 'background 0.2s', '&:hover': { background: '#f0f6ff' } }}>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.orderDate}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipName}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipAddress}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipCity}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipRegion}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipPostalCode}</TableCell>
-                  <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{o.shipCountry}</TableCell>
-                  <TableCell align='center' sx={{ borderBottom: '1px solid #e0e0e0' }}>
-                    <Stack direction='row' spacing={1} justifyContent='center'>
-                      <IconButton color='primary' onClick={() => handleEdit(o)}>
-                        <Edit size={18} />
-                      </IconButton>
-                      <IconButton color='error' onClick={() => handleDelete(o.id)}>
-                        <Trash size={18} />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
-            }
+            {orders.slice(0, 10).map((o) => (
+              <TableRow
+                key={o.id}
+                sx={{
+                  transition: "background 0.2s",
+                  "&:hover": { background: "#f0f6ff" },
+                }}
+              >
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.orderDate}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipName}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipAddress}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipCity}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipRegion}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipPostalCode}
+                </TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {o.shipCountry}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ borderBottom: "1px solid #e0e0e0" }}
+                >
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <IconButton color="primary" onClick={() => handleEdit(o)}>
+                      <Edit size={18} />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(o.id)}
+                    >
+                      <Trash size={18} />
+                    </IconButton>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
 

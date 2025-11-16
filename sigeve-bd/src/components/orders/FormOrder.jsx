@@ -69,14 +69,30 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" PaperProps={{ sx: { borderRadius: 3, p: 2, minWidth: 400, background: '#fff' } }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      PaperProps={{
+        sx: { borderRadius: 3, p: 2, minWidth: 400, background: "#fff" },
+      }}
+    >
       <DialogTitle>
         {orderToEdit ? "Editar Orden" : "Agregar Orden"}
       </DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          <div style={{ maxWidth: 500, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginTop: '0.5rem' }}>
+          <div
+            style={{
+              maxWidth: 500,
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.35rem",
+              marginTop: "0.5rem",
+            }}
+          >
             <TextField
               fullWidth
               name="customerID"
@@ -95,7 +111,7 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
               required
               margin="dense"
             />
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
                 name="orderDate"
@@ -119,7 +135,7 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
                 InputLabelProps={{ shrink: true }}
               />
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
                 name="shippedDate"
@@ -167,7 +183,7 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
               onChange={handleChange}
               margin="dense"
             />
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
                 name="shipCity"
@@ -185,7 +201,7 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
                 margin="dense"
               />
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
                 name="shipPostalCode"
@@ -203,14 +219,26 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
                 margin="dense"
               />
             </div>
-            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, py: 1.2, fontWeight: 700, fontSize: '1rem', borderRadius: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                mt: 2,
+                py: 1.2,
+                fontWeight: 700,
+                fontSize: "1rem",
+                borderRadius: 2,
+              }}
+            >
               {orderToEdit ? "Actualizar" : "Guardar"}
             </Button>
           </div>
         </form>
       </DialogContent>
 
-      <DialogActions sx={{ justifyContent: 'flex-end', pr: 3 }}>
+      <DialogActions sx={{ justifyContent: "flex-end", pr: 3 }}>
         <Button onClick={onClose} color="inherit">
           Cancelar
         </Button>
