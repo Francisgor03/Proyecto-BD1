@@ -98,41 +98,41 @@ export default function Customers() {
       </Box>
 
       <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Compañía</TableCell>
-              <TableCell>Ciudad</TableCell>
-              <TableCell>Teléfono</TableCell>
-              <TableCell align='center'>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {customers.map(c => (
-              <TableRow key={c.id}>
-                <TableCell>{c.contactName}</TableCell>
-                <TableCell>{c.companyName}</TableCell>
-                <TableCell>{c.city}</TableCell>
-                <TableCell>{c.phone}</TableCell>
-                <TableCell align='center'>
-                  <Stack direction='row' spacing={1} justifyContent='center'>
-                    <IconButton color='primary' onClick={() => handleEdit(c)}>
-                      <Edit size={18} />
-                    </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(c.id)}>
-                      <Trash size={18} />
-                    </IconButton>
-                  </Stack>
-                </TableCell>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)" }}>
+                <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Nombre</TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Compañía</TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Ciudad</TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Teléfono</TableCell>
+                <TableCell align='center' sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {customers.slice(0, 10).map(c => (
+                <TableRow key={c.id} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
+                  <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.contactName}</TableCell>
+                  <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.companyName}</TableCell>
+                  <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.city}</TableCell>
+                  <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.phone}</TableCell>
+                  <TableCell align='center' sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                    <Stack direction='row' spacing={1} justifyContent='center'>
+                      <IconButton color='primary' onClick={() => handleEdit(c)}>
+                        <Edit size={18} />
+                      </IconButton>
+                      <IconButton color='error' onClick={() => handleDelete(c.id)}>
+                        <Trash size={18} />
+                      </IconButton>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
       <Box display='flex' justifyContent='center' mt={2}>
-        <Pagination count={totalPages} page={page + 1} onChange={handlePageChange} color='primary' shape='rounded' />
+        <Pagination count={totalPages} page={page + 1} onChange={handlePageChange} color='primary' shape='rounded' siblingCount={0} boundaryCount={1} size="medium" />
       </Box>
 
       {/* 🔹 Modal de Formulario */}

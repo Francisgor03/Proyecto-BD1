@@ -1,19 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Grid } from '@mui/material';
-import { supplierApi } from '../../services/api';
-export default function FormSupplier({ open, onClose, supplierToEdit, onSave }) {
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+} from "@mui/material";
+import { supplierApi } from "../../services/api";
+
+export default function FormSupplier({
+  open,
+  onClose,
+  supplierToEdit,
+  onSave,
+}) {
   const [form, setForm] = useState({
-    companyName: '',
-    contactName: '',
-    contactTitle: '',
-    address: '',
-    city: '',
-    region: '',
-    postalCode: '',
-    country: '',
-    phone: '',
-    fax: '',
-    homepage: '',
+    companyName: "",
+    contactName: "",
+    contactTitle: "",
+    address: "",
+    city: "",
+    region: "",
+    postalCode: "",
+    country: "",
+    phone: "",
+    fax: "",
+    homePage: "",
   });
 
   useEffect(() => {
@@ -21,162 +34,205 @@ export default function FormSupplier({ open, onClose, supplierToEdit, onSave }) 
       setForm(supplierToEdit);
     } else {
       setForm({
-        companyName: '',
-        contactName: '',
-        contactTitle: '',
-        address: '',
-        city: '',
-        region: '',
-        postalCode: '',
-        country: '',
-        phone: '',
-        fax: '',
-        homepage: '',
+        companyName: "",
+        contactName: "",
+        contactTitle: "",
+        address: "",
+        city: "",
+        region: "",
+        postalCode: "",
+        country: "",
+        phone: "",
+        fax: "",
+        homePage: "",
       });
     }
   }, [supplierToEdit]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (supplierToEdit) {
-        await supplierApi.update(supplierToEdit.id, form); 
+        await supplierApi.update(supplierToEdit.id, form);
       } else {
-        await supplierApi.create(form); 
+        await supplierApi.create(form);
       }
-      onSave(); 
+      onSave();
       onClose();
     } catch (error) {
-      console.error('Error al guardar el proveedor:', error);
+      console.error("Error al guardar el proveedor:", error);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>{supplierToEdit ? 'Editar Proveedor' : 'Agregar Proveedor'}</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      PaperProps={{
+        sx: { borderRadius: 3, p: 2, minWidth: 450, background: "#fff" },
+      }}
+    >
+      <DialogTitle>
+        {supplierToEdit ? "Editar Proveedor" : "Agregar Proveedor"}
+      </DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} mt={1}>
+          <div
+            style={{
+              maxWidth: 500,
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.4rem",
+              marginTop: "0.5rem",
+            }}
+          >
+            {/* Empresa */}
+            <TextField
+              fullWidth
+              name="companyName"
+              label="Nombre de la Compañía *"
+              value={form.companyName}
+              onChange={handleChange}
+              required
+              margin="dense"
+            />
 
-            <Grid item xs={12} sm={6}>
+            {/* Contacto */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='companyName'
-                label='Nombre de la Compañía'
-                value={form.companyName}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name='contactName'
-                label='Nombre de Contacto'
+                name="contactName"
+                label="Nombre de Contacto *"
                 value={form.contactName}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='contactTitle'
-                label='Título de Contacto'
+                name="contactTitle"
+                label="Título de Contacto *"
                 value={form.contactTitle}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6}>
+            {/* Dirección */}
+            <TextField
+              fullWidth
+              name="address"
+              label="Dirección *"
+              value={form.address}
+              onChange={handleChange}
+              required
+              margin="dense"
+            />
+
+            {/* Ciudad / Región */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='address'
-                label='Dirección'
-                value={form.address}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name='city'
-                label='Ciudad'
+                name="city"
+                label="Ciudad *"
                 value={form.city}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='region'
-                label='Región'
+                name="region"
+                label="Región *"
                 value={form.region}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6}>
+            {/* Código Postal / País */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='postalCode'
-                label='Código Postal'
+                name="postalCode"
+                label="Código Postal *"
                 value={form.postalCode}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='country'
-                label='País'
+                name="country"
+                label="País"
                 value={form.country}
                 onChange={handleChange}
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6}>
+            {/* Teléfono / Fax */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='phone'
-                label='Teléfono'
+                name="phone"
+                label="Teléfono"
                 value={form.phone}
                 onChange={handleChange}
+                margin="dense"
               />
-            </Grid>
+              <TextField
+                fullWidth
+                name="fax"
+                label="Fax"
+                value={form.fax}
+                onChange={handleChange}
+                margin="dense"
+              />
+            </div>
 
-            <Grid item xs={12} sm={6}>
-              <TextField fullWidth name='fax' label='Fax' value={form.fax} onChange={handleChange} />
-            </Grid>
+            {/* Página Web */}
+            <TextField
+              fullWidth
+              name="homePage"
+              label="Página Web"
+              value={form.homePage}
+              onChange={handleChange}
+              margin="dense"
+            />
 
-            <Grid item xs={12} sm={6}>
-              <TextField fullWidth name='homePage' label='Página de Inicio' value={form.homePage} onChange={handleChange} />
-            </Grid>
-          </Grid>
+            {/* Botón Guardar */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                mt: 2,
+                py: 1.2,
+                fontWeight: 700,
+                fontSize: "1rem",
+                borderRadius: 2,
+              }}
+            >
+              {supplierToEdit ? "Actualizar" : "Guardar"}
+            </Button>
+          </div>
         </form>
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose} color='inherit'>
+      <DialogActions sx={{ justifyContent: "flex-end", pr: 3 }}>
+        <Button onClick={onClose} color="inherit">
           Cancelar
-        </Button>
-        <Button onClick={handleSubmit} variant='contained' color='primary'>
-          {supplierToEdit ? 'Actualizar' : 'Guardar'}
         </Button>
       </DialogActions>
     </Dialog>

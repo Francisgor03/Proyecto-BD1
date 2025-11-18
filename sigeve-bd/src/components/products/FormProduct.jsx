@@ -1,16 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Grid, Checkbox, FormControlLabel } from '@mui/material';
-import { productApi } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
+import { productApi } from "../../services/api";
+
 export default function FormProduct({ open, onClose, productToEdit, onSave }) {
   const [form, setForm] = useState({
-    productName: '',
-    supplierId: '',
-    categoryId: '',
-    quantityPerUnit: '',
-    unitPrice: '',
-    unitsInStock: '',
-    unitsOnOrder: '',
-    reorderLevel: '',
+    productName: "",
+    supplierId: "",
+    categoryId: "",
+    quantityPerUnit: "",
+    unitPrice: "",
+    unitsInStock: "",
+    unitsOnOrder: "",
+    reorderLevel: "",
     discontinued: false,
   });
 
@@ -19,157 +29,191 @@ export default function FormProduct({ open, onClose, productToEdit, onSave }) {
       setForm(productToEdit);
     } else {
       setForm({
-        productName: '',
-        supplierId: '',
-        categoryId: '',
-        quantityPerUnit: '',
-        unitPrice: '',
-        unitsInStock: '',
-        unitsOnOrder: '',
-        reorderLevel: '',
+        productName: "",
+        supplierId: "",
+        categoryId: "",
+        quantityPerUnit: "",
+        unitPrice: "",
+        unitsInStock: "",
+        unitsOnOrder: "",
+        reorderLevel: "",
         discontinued: false,
       });
     }
   }, [productToEdit]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (productToEdit) {
         await productApi.update(productToEdit.id, form);
       } else {
-        await productApi.create(form); 
+        await productApi.create(form);
       }
-      onSave(); 
+      onSave();
       onClose();
     } catch (error) {
-      console.error('Error al guardar la orden:', error);
+      console.error("Error al guardar el producto:", error);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='md'>
-      <DialogTitle>{productToEdit ? 'Editar Producto' : 'Agregar Producto'}</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      PaperProps={{
+        sx: { borderRadius: 3, p: 2, minWidth: 450, background: "#fff" },
+      }}
+    >
+      <DialogTitle>
+        {productToEdit ? "Editar Producto" : "Agregar Producto"}
+      </DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} mt={1}>
+          <div
+            style={{
+              maxWidth: 500,
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.4rem",
+              marginTop: "0.5rem",
+            }}
+          >
+            {/* Nombre */}
+            <TextField
+              fullWidth
+              name="productName"
+              label="Nombre del Producto *"
+              value={form.productName}
+              onChange={handleChange}
+              required
+              margin="dense"
+            />
 
-            <Grid item xs={12} sm={6}>
+            {/* Proveedor / Categoría */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='productName'
-                label='Nombre del Producto'
-                value={form.productName}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name='supplierId'
-                label='ID del Proveedor'
+                name="supplierId"
+                label="ID Proveedor *"
                 value={form.supplierId}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='categoryId'
-                label='ID de la Categoría'
+                name="categoryId"
+                label="ID Categoría *"
                 value={form.categoryId}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6}>
+            {/* Cantidad por unidad */}
+            <TextField
+              fullWidth
+              name="quantityPerUnit"
+              label="Cantidad por Unidad *"
+              value={form.quantityPerUnit}
+              onChange={handleChange}
+              required
+              margin="dense"
+            />
+
+            {/* Precio / Stock */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='quantityPerUnit'
-                label='Cantidad por Unidad'
-                value={form.quantityPerUnit}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name='unitPrice'
-                label='Precio por Unidad'
+                name="unitPrice"
+                label="Precio por Unidad *"
+                type="number"
                 value={form.unitPrice}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='unitsInStock'
-                label='Unidades en Stock'
+                name="unitsInStock"
+                label="Unidades en Stock *"
+                type="number"
                 value={form.unitsInStock}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6}>
+            {/* En pedido / Reorden */}
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <TextField
                 fullWidth
-                name='unitsOnOrder'
-                label='Unidades en Pedido'
+                name="unitsOnOrder"
+                label="Unidades en Pedido *"
+                type="number"
                 value={form.unitsOnOrder}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                name='reorderLevel'
-                label='Nivel de Reorden'
+                name="reorderLevel"
+                label="Nivel de Reorden *"
+                type="number"
                 value={form.reorderLevel}
                 onChange={handleChange}
                 required
+                margin="dense"
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12} sm={6} display='flex' alignItems='center'>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={form.discontinued}
-                    onChange={e => setForm({ ...form, discontinued: e.target.checked })}
-                    color='primary'
-                  />
-                }
-                label='Descontinuado'
-              />
-            </Grid>
+            {/* Checkbox */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={form.discontinued}
+                  onChange={(e) =>
+                    setForm({ ...form, discontinued: e.target.checked })
+                  }
+                />
+              }
+              label="Descontinuado"
+            />
 
-          </Grid>
+            {/* Botón */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                mt: 2,
+                py: 1.2,
+                fontWeight: 700,
+                fontSize: "1rem",
+                borderRadius: 2,
+              }}
+            >
+              {productToEdit ? "Actualizar" : "Guardar"}
+            </Button>
+          </div>
         </form>
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose} color='inherit'>
+      <DialogActions sx={{ justifyContent: "flex-end", pr: 3 }}>
+        <Button onClick={onClose} color="inherit">
           Cancelar
-        </Button>
-        <Button onClick={handleSubmit} variant='contained' color='primary'>
-          {productToEdit ? 'Actualizar' : 'Guardar'}
         </Button>
       </DialogActions>
     </Dialog>

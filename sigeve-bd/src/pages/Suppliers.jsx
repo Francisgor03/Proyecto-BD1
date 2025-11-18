@@ -1,54 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { supplierApi } from '../services/api';
+import React, { useEffect, useState, useCallback } from "react";
+import { supplierApi } from "../services/api";
 import {
-    Box,
-    Typography,
-    CircularProgress,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Alert,
-    Pagination,
-    Button,
-    IconButton,
-    Stack
-} from '@mui/material';
-import { Edit, Trash } from 'lucide-react';
-import FormSupplier from '../components/suppliers/FormSupplier';
+  Box,
+  Typography,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Alert,
+  TablePagination,
+  Button,
+  IconButton,
+  Stack,
+} from "@mui/material";
+import { Edit, Trash } from "lucide-react";
+import FormSupplier from "../components/suppliers/FormSupplier";
 
 export default function Suppliers() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalElements, setTotalElements] = useState(0);
+
   const [openForm, setOpenForm] = useState(false);
   const [supplierToEdit, setSupplierToEdit] = useState(null);
 
-  const fetchSuppliers = async (pageNum = 0) => {
-    setLoading(true);
-    try {
-      const response = await supplierApi.getAll(pageNum, 10);
-      setSuppliers(response.data.content);
-      setTotalPages(response.data.totalPages);
-    } catch (err) {
-      console.error(err);
-      setError('Error al cargar los proveedores');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchSuppliers = useCallback(
+    async (pageNum = 0, size = rowsPerPage) => {
+      setLoading(true);
+      try {
+        const response = await supplierApi.getAll(pageNum, size);
+
+        const data = response.data || {};
+        setSuppliers(data.content || []);
+        setTotalElements(data.totalElements ?? (data.totalPages ?? 0) * size);
+      } catch (err) {
+        console.error(err);
+        setError("Error al cargar los proveedores");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [rowsPerPage]
+  );
 
   useEffect(() => {
-    fetchSuppliers(page);
-  }, [page]);
+    fetchSuppliers(page, rowsPerPage);
+  }, [fetchSuppliers, page, rowsPerPage]);
 
-  const handlePageChange = (event, value) => {
-    setPage(value - 1);
+  const handleChangePage = (event, newPage) => setPage(newPage);
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
   };
 
   const handleNew = () => {
@@ -56,25 +68,25 @@ export default function Suppliers() {
     setOpenForm(true);
   };
 
-  const handleEdit = supplier => {
+  const handleEdit = (supplier) => {
     setSupplierToEdit(supplier);
     setOpenForm(true);
   };
 
-  const handleDelete = async id => {
-    if (window.confirm('¿Seguro que deseas eliminar este proveedor?')) {
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Seguro que deseas eliminar este proveedor?")) {
       try {
         await supplierApi.remove(id);
         fetchSuppliers(page);
       } catch (err) {
-        console.error('Error al eliminar este proveedor:', err);
+        console.error("Error al eliminar proveedor:", err);
       }
     }
   };
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
+      <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
         <CircularProgress />
       </Box>
     );
@@ -83,42 +95,81 @@ export default function Suppliers() {
   if (error) {
     return (
       <Box m={2}>
-        <Alert severity='error'>{error}</Alert>
+        <Alert severity="error">{error}</Alert>
       </Box>
     );
   }
 
   return (
     <Box p={3}>
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h5'>Lista de Proveedores</Typography>
-        <Button variant='contained' color='primary' onClick={handleNew}>
-          Nuevo
-        </Button>
-      </Box>
+      <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h5">Lista de Proveedores</Typography>
+          <Button variant="contained" color="primary" onClick={handleNew}>
+            Agregar Proveedor
+          </Button>
+        </Box>
+      </Paper>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 4 }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Nombre del Proveedor</TableCell>
-              <TableCell>Nombre de Compania</TableCell>
-              <TableCell>Nombre de Contacto</TableCell>
-              <TableCell>Titulo de Contacto</TableCell>
-              <TableCell>Direccion</TableCell>
-              <TableCell>Ciudad</TableCell>
-              <TableCell>Region</TableCell>
-              <TableCell>Codigo Postal</TableCell>
-              <TableCell>Pais</TableCell>
-              <TableCell>Telefono</TableCell>
-              <TableCell>Fax</TableCell>
-              <TableCell>Pagina de Inicio</TableCell>
-              <TableCell align='center'>Acciones</TableCell>
+            <TableRow
+              sx={{
+                background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)",
+              }}
+            >
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Compañía
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Contacto
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Título de Contacto
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Dirección
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Ciudad
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Región
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Código Postal
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                País
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Teléfono
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Fax
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Página Web
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}
+              >
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {suppliers.map(s => (
-              <TableRow key={s.id}>
+            {suppliers.map((s) => (
+              <TableRow
+                key={s.id}
+                sx={{
+                  transition: "background 0.2s",
+                  "&:hover": { background: "#f0f6ff" },
+                }}
+              >
                 <TableCell>{s.companyName}</TableCell>
                 <TableCell>{s.contactName}</TableCell>
                 <TableCell>{s.contactTitle}</TableCell>
@@ -130,12 +181,14 @@ export default function Suppliers() {
                 <TableCell>{s.phone}</TableCell>
                 <TableCell>{s.fax}</TableCell>
                 <TableCell>{s.homepage}</TableCell>
-                <TableCell align='center'>
-                  <Stack direction='row' spacing={1} justifyContent='center'>
-                    <IconButton color='primary' onClick={() => handleEdit(s)}>
+
+                <TableCell align="center">
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <IconButton color="primary" onClick={() => handleEdit(s)}>
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(s.id)}>
+
+                    <IconButton color="error" onClick={() => handleDelete(s.id)}>
                       <Trash size={18} />
                     </IconButton>
                   </Stack>
@@ -144,13 +197,18 @@ export default function Suppliers() {
             ))}
           </TableBody>
         </Table>
+
+        <TablePagination
+          component="div"
+          count={totalElements}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10]}
+        />
       </TableContainer>
 
-      <Box display='flex' justifyContent='center' mt={2}>
-        <Pagination count={totalPages} page={page + 1} onChange={handlePageChange} color='primary' shape='rounded' />
-      </Box>
-
-      {/* Modal de Formulario */}
       <FormSupplier
         open={openForm}
         onClose={() => setOpenForm(false)}
