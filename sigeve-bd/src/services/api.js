@@ -98,4 +98,9 @@ export const territoryApi = {
   remove: id => api.delete(`/territories/${id}`)
 };
 
+export const reportesApi = {
+  getDetallePedidos: () => api.get('/reportes/detalle-pedidos'),
+  getVentasClienteRegion: () => api.get('/reportes/ventas-cliente-region'),
+};
+
 export default api;

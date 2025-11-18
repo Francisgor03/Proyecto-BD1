@@ -22,7 +22,9 @@ export default function Sidebar() {
   { text: 'Categorías', icon: <CategoryIcon />, path: '/categories' },
   { text: 'Remitentes', icon: <LocalShippingIcon />, path: '/shippers' },
   { text: 'Regiones', icon: <MapIcon />, path: '/region' },
-  { text: 'Territorios', icon: <RoomIcon />, path: '/territories' }
+  { text: 'Territorios', icon: <RoomIcon />, path: '/territories' },
+  { text: 'Detalle Pedidos', icon: <DashboardIcon />, path: '/reportes/detalle-pedidos' },
+  { text: 'Reporte Ventas', icon: <DashboardIcon />, path: '/reportes/ventas-cliente-region' }
 ];
 
 
