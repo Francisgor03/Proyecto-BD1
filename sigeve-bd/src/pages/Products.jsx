@@ -105,7 +105,7 @@ export default function Products() {
           <Typography variant="h5">Listado de Productos</Typography>
 
           <Button variant="contained" color="primary" onClick={handleNew}>
-            Nuevo Producto
+            Agregar Producto
           </Button>
         </Box>
       </Paper>
@@ -191,7 +191,7 @@ export default function Products() {
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 10]}
         />
       </TableContainer>
 
