@@ -12,12 +12,15 @@ import {
   TableRow,
   Paper,
   Alert,
+  TablePagination,
 } from '@mui/material';
 
 export default function ReporteVentasClienteRegion() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     fetchData();
@@ -27,7 +30,7 @@ export default function ReporteVentasClienteRegion() {
     setLoading(true);
     try {
       const response = await reportesApi.getVentasClienteRegion();
-      setDatos(response.data);
+      setDatos(response.data || []);
     } catch (err) {
       console.error(err);
       setError('Error al cargar el reporte');
@@ -35,6 +38,22 @@ export default function ReporteVentasClienteRegion() {
       setLoading(false);
     }
   };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
+  };
+
+  // Datos paginados en el frontend
+  const datosPaginados = datos.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   if (loading) {
     return (
@@ -58,7 +77,7 @@ export default function ReporteVentasClienteRegion() {
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
             <Typography variant="h5">Reporte: Ventas por Cliente y Región</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               Resumen de ventas totales agrupadas por cliente
             </Typography>
           </Box>
@@ -80,7 +99,7 @@ export default function ReporteVentasClienteRegion() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {datos.map((row, index) => (
+            {datosPaginados.map((row, index) => (
               <TableRow key={index} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.cliente}</TableCell>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.contacto}</TableCell>
@@ -96,6 +115,16 @@ export default function ReporteVentasClienteRegion() {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={datos.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          labelRowsPerPage="Filas por página:"
+        />
       </TableContainer>
     </Box>
   );

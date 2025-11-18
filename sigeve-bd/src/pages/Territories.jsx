@@ -12,7 +12,7 @@ import {
   TableRow,
   Paper,
   Alert,
-  Pagination,
+  TablePagination,
   Button,
   IconButton,
   Stack
@@ -25,30 +25,41 @@ export default function Territories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openForm, setOpenForm] = useState(false);
   const [territoryToEdit, setTerritoryToEdit] = useState(null);
 
-  const fetchTerritories = async (pageNum = 0) => {
-    setLoading(true);
-    try {
-      const response = await territoryApi.getAll(pageNum, 10);
-      setTerritories(response.data.content);
-      setTotalPages(response.data.totalPages);
-    } catch (err) {
-      console.error(err);
-      setError('Error al cargar los territorios');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchTerritories = React.useCallback(
+    async (pageNum = 0, size = rowsPerPage) => {
+      setLoading(true);
+      try {
+        const response = await territoryApi.getAll(pageNum, size);
+        const data = response.data || {};
+        setTerritories(data.content || []);
+        setTotalElements(data.totalElements ?? (data.totalPages ?? 0) * size);
+      } catch (err) {
+        console.error(err);
+        setError('Error al cargar los territorios');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [rowsPerPage]
+  );
 
   useEffect(() => {
-    fetchTerritories(page);
-  }, [page]);
+    fetchTerritories(page, rowsPerPage);
+  }, [page, rowsPerPage, fetchTerritories]);
 
-  const handlePageChange = (event, value) => {
-    setPage(value - 1);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
   };
 
   const handleNew = () => {
@@ -98,7 +109,7 @@ export default function Territories() {
 
           <Box display="flex" gap={2} alignItems="center">
             <Button variant="contained" color="primary" onClick={handleNew}>
-              Nuevo Territorio
+              Agregar Territorio
             </Button>
           </Box>
         </Box>
@@ -134,17 +145,16 @@ export default function Territories() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-
-      <Box display="flex" justifyContent="center" mt={2}>
-        <Pagination
-          count={totalPages}
-          page={page + 1}
-          onChange={handlePageChange}
-          color="primary"
-          shape="rounded"
+        <TablePagination
+          component="div"
+          count={totalElements}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10]}
         />
-      </Box>
+      </TableContainer>
 
       {/* 🔹 Modal de Formulario */}
       <FormTerritories

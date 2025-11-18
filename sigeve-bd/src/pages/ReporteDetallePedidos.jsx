@@ -12,12 +12,15 @@ import {
   TableRow,
   Paper,
   Alert,
+  TablePagination,
 } from '@mui/material';
 
 export default function ReporteDetallePedidos() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     fetchData();
@@ -27,7 +30,7 @@ export default function ReporteDetallePedidos() {
     setLoading(true);
     try {
       const response = await reportesApi.getDetallePedidos();
-      setDatos(response.data);
+      setDatos(response.data || []);
     } catch (err) {
       console.error(err);
       setError('Error al cargar el reporte');
@@ -35,6 +38,22 @@ export default function ReporteDetallePedidos() {
       setLoading(false);
     }
   };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
+  };
+
+  // Datos paginados en el frontend
+  const datosPaginados = datos.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   if (loading) {
     return (
@@ -58,7 +77,7 @@ export default function ReporteDetallePedidos() {
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
             <Typography variant="h5">Reporte: Detalle de Pedidos</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               Vista completa de pedidos con productos y totales
             </Typography>
           </Box>
@@ -82,7 +101,7 @@ export default function ReporteDetallePedidos() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {datos.map((row, index) => (
+            {datosPaginados.map((row, index) => (
               <TableRow key={index} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.idPedido}</TableCell>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.fechaPedido}</TableCell>
@@ -93,11 +112,23 @@ export default function ReporteDetallePedidos() {
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.cantidad}</TableCell>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>${row.precioUnitario?.toFixed(2)}</TableCell>
                 <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{(row.descuento * 100).toFixed(0)}%</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0", fontWeight: 700 }}>${row.totalLinea?.toFixed(2)}</TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0", fontWeight: 700, color: "#4caf50" }}>
+                  ${row.totalLinea?.toFixed(2)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={datos.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          labelRowsPerPage="Filas por página:"
+        />
       </TableContainer>
     </Box>
   );
