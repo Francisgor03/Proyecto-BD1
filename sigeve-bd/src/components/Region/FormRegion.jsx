@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Grid
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
 import { regionApi } from '../../services/api';
 
 export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
@@ -15,7 +7,7 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
     regionDescription: ''
   });
 
-  // Cargar datos si se va a editar
+  // 🔹 Cargar datos al editar
   useEffect(() => {
     if (regionToEdit) {
       setForm({
@@ -46,7 +38,7 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
           regionDescription: form.regionDescription
         });
       }
-      onSave();
+      onSave(); // para refrescar la tabla
       onClose();
     } catch (error) {
       console.error('Error al guardar la región:', error);
@@ -54,35 +46,53 @@ export default function FormRegion({ open, onClose, regionToEdit, onSave }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      PaperProps={{
+        sx: { borderRadius: 3, p: 2, minWidth: 400, background: "#fff" },
+      }}
+    >
       <DialogTitle>
-        {regionToEdit ? 'Editar Región' : 'Agregar Región'}
+        {regionToEdit ? "Editar Región" : "Agregar Región"}
       </DialogTitle>
-
       <DialogContent>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} mt={1}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                name="regionDescription"
-                label="Descripción de la Región"
-                value={form.regionDescription}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-
-          </Grid>
+          <div
+            style={{
+              maxWidth: 500,
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.35rem",
+              marginTop: "0.5rem",
+            }}
+          >
+            <TextField
+              fullWidth
+              name="regionDescription"
+              label="Descripción de la Región *"
+              value={form.regionDescription}
+              onChange={handleChange}
+              required
+              margin="dense"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2, py: 1.2, fontWeight: 700, fontSize: "1rem", borderRadius: 2 }}
+            >
+              {regionToEdit ? "Actualizar" : "Guardar"}
+            </Button>
+          </div>
         </form>
       </DialogContent>
-
-      <DialogActions>
+      <DialogActions sx={{ justifyContent: "flex-end", pr: 3 }}>
         <Button onClick={onClose} color="inherit">
           Cancelar
-        </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          {regionToEdit ? 'Actualizar' : 'Guardar'}
         </Button>
       </DialogActions>
     </Dialog>

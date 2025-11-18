@@ -90,28 +90,35 @@ export default function Regions() {
 
   return (
     <Box p={3}>
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h5'>Lista de Regiones</Typography>
-        <Button variant='contained' color='primary' onClick={handleNew}>
-          Nueva Región
-        </Button>
-      </Box>
+      <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="h5">Listado de Regiones</Typography>
+          </Box>
+
+          <Box display="flex" gap={2} alignItems="center">
+            <Button variant="contained" color="primary" onClick={handleNew}>
+              Nueva Región
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>ID Región</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell align='center'>Acciones</TableCell>
+            <TableRow sx={{ background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>ID Región</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Descripción</TableCell>
+              <TableCell align='center' sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {regions.map(r => (
-              <TableRow key={r.id}>
-                <TableCell>{r.id}</TableCell>
-                <TableCell>{r.regionDescription}</TableCell>
-                <TableCell align='center'>
+              <TableRow key={r.id} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{r.id}</TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{r.regionDescription}</TableCell>
+                <TableCell align='center' sx={{ borderBottom: "1px solid #e0e0e0" }}>
                   <Stack direction='row' spacing={1} justifyContent='center'>
                     <IconButton color='primary' onClick={() => handleEdit(r)}>
                       <Edit size={18} />
@@ -137,7 +144,7 @@ export default function Regions() {
         />
       </Box>
 
-      {/* Modal del formulario */}
+      {/* 🔹 Modal de Formulario */}
       <FormRegion
         open={openForm}
         onClose={() => setOpenForm(false)}

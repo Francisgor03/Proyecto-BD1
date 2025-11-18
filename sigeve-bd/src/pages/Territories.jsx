@@ -90,30 +90,37 @@ export default function Territories() {
 
   return (
     <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">Lista de Territorios</Typography>
-        <Button variant="contained" color="primary" onClick={handleNew}>
-          Nuevo
-        </Button>
-      </Box>
+      <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            <Typography variant="h5">Listado de Territorios</Typography>
+          </Box>
+
+          <Box display="flex" gap={2} alignItems="center">
+            <Button variant="contained" color="primary" onClick={handleNew}>
+              Nuevo Territorio
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
 
       <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>ID Territorio</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>ID Región</TableCell>
-              <TableCell align="center">Acciones</TableCell>
+            <TableRow sx={{ background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>ID Territorio</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Descripción</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>ID Región</TableCell>
+              <TableCell align="center" sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {territories.map((t) => (
-              <TableRow key={t.id}>
-                <TableCell>{t.id}</TableCell>
-                <TableCell>{t.territoryDescription}</TableCell>
-                <TableCell>{t.regionId}</TableCell>
-                <TableCell align="center">
+              <TableRow key={t.id} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{t.id}</TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{t.territoryDescription}</TableCell>
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{t.regionId}</TableCell>
+                <TableCell align="center" sx={{ borderBottom: "1px solid #e0e0e0" }}>
                   <Stack direction="row" spacing={1} justifyContent="center">
                     <IconButton color="primary" onClick={() => handleEdit(t)}>
                       <Edit size={18} />
@@ -139,7 +146,7 @@ export default function Territories() {
         />
       </Box>
 
-      {/* 🔹 Modal Formulario */}
+      {/* 🔹 Modal de Formulario */}
       <FormTerritories
         open={openForm}
         onClose={() => setOpenForm(false)}
@@ -149,4 +156,3 @@ export default function Territories() {
     </Box>
   );
 }
-
