@@ -8,6 +8,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import MapIcon from '@mui/icons-material/Map';
 import RoomIcon from '@mui/icons-material/Room';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 
 export default function Sidebar() {
@@ -24,7 +25,8 @@ export default function Sidebar() {
   { text: 'Regiones', icon: <MapIcon />, path: '/region' },
   { text: 'Territorios', icon: <RoomIcon />, path: '/territories' },
   { text: 'Detalle Pedidos', icon: <DashboardIcon />, path: '/reportes/detalle-pedidos' },
-  { text: 'Reporte Ventas', icon: <DashboardIcon />, path: '/reportes/ventas-cliente-region' }
+  { text: 'Reporte Ventas', icon: <DashboardIcon />, path: '/reportes/ventas-cliente-region' },
+  { text: 'Ventas por Categoría', icon: <ReceiptIcon />, path: '/reportes/ventas-por-categoria' }
 ];
 
 

@@ -103,4 +103,8 @@ export const reportesApi = {
   getVentasClienteRegion: () => api.get('/reportes/ventas-cliente-region'),
 };
 
+export const ventasCategoriaApi = {
+  getAll: () => api.get('/reportes/ventas-por-categoria'), 
+};
+
 export default api;
