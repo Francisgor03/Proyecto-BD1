@@ -19,7 +19,8 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import { Edit, Trash, Search } from "lucide-react";
+import { Edit, Trash, Search,Eye } from "lucide-react";
+import OrderDetails from "../components/orders/OrderDetails";
 import FormOrder from "../components/orders/FormOrder";
 
 export default function Orders() {
@@ -255,6 +256,12 @@ export default function Orders() {
                     <IconButton color="primary" onClick={() => handleEdit(o)}>
                       <Edit size={18} />
                     </IconButton>
+                    {/* AGREGAR ESTE BOTÓN NUEVO */}
+                      <OrderDetails 
+                      orderId={o.id} 
+                      onOrderDetailDeleted={() => fetchOrders(page)}
+                      onOrderDeleted={() => fetchOrders(page)}
+                    /> 
                     <IconButton
                       color="error"
                       onClick={() => handleDelete(o.id)}

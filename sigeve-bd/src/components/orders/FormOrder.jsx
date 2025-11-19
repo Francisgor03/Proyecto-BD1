@@ -12,8 +12,8 @@ import { orderApi } from "../../services/api";
 
 export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
   const [form, setForm] = useState({
-    customerID: "",
-    employeeID: "",
+    orderID: "",
+    productID: "",
     orderDate: "",
     requiredDate: "",
     shippedDate: "",
@@ -32,8 +32,8 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
       setForm(orderToEdit);
     } else {
       setForm({
-        customerID: "",
-        employeeID: "",
+        orderID: "",
+        productID: "",
         orderDate: "",
         requiredDate: "",
         shippedDate: "",
@@ -95,18 +95,18 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
           >
             <TextField
               fullWidth
-              name="customerID"
+              name="orderID"
               label="ID del Cliente *"
-              value={form.customerID}
+              value={form.orderID}
               onChange={handleChange}
               required
               margin="dense"
             />
             <TextField
               fullWidth
-              name="employeeID"
+              name="productID"
               label="ID del Empleado *"
-              value={form.employeeID}
+              value={form.productID}
               onChange={handleChange}
               required
               margin="dense"

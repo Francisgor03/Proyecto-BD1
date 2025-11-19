@@ -49,6 +49,14 @@ export const orderApi = {
   remove: id => api.delete(`/orders/${id}`)
 };
 
+export const orderDetailsApi = {
+  getByOrderId: (orderId) => 
+    api.get(`/orderDetails/order/${orderId}`),
+    
+  deleteOrderDetail: (orderId, productId) => 
+    api.delete(`/orderDetails/order/${orderId}/product/${productId}`)
+};
+
 export const productApi = {
   getAll: (page = 0, size = 5) => api.get(`/products?page=${page}&size=${size}`),
   getById: id => api.get(`/products/${id}`),
@@ -110,5 +118,6 @@ export const ventasCategoriaApi = {
 export const procedimientosApi = {
   getHistorialCliente: id => api.get(`/procedimientos/historial-cliente/${id}`)
 };
+
 
 export default api;
