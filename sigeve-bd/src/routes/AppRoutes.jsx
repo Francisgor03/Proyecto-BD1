@@ -11,7 +11,6 @@ import Region from '../pages/Region';
 import Territories from '../pages/Territories';
 import ReporteDetallePedidos from '../pages/ReporteDetallePedidos';
 import ReporteVentasClienteRegion from '../pages/ReporteVentasClienteRegion';
-import ReporteVentasCategoria from '../pages/ReporteVentasCategoria';
 
 export default function AppRoutes() {
   return (
@@ -29,7 +28,6 @@ export default function AppRoutes() {
           <Route path='/territories' element={<Territories />} />
           <Route path= '/reportes/detalle-pedidos' element={<ReporteDetallePedidos/>} />
           <Route path='/reportes/ventas-cliente-region' element={<ReporteVentasClienteRegion />} />
-          <Route path='/reportes/ventas-por-categoria' element={<ReporteVentasCategoria />} />
         </Route>
       </Routes>
     </BrowserRouter>
