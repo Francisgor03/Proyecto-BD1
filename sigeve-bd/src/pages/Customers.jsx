@@ -15,10 +15,12 @@ import {
   TablePagination,
   Button,
   IconButton,
-  Stack
+  Stack,
+  Tooltip
 } from '@mui/material';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Trash, History } from 'lucide-react';
 import FormCustomer from '../components/customers/FormCustomer';
+import HistoryOrders from '../components/customers/HistoryOrders';
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
@@ -27,8 +29,11 @@ export default function Customers() {
   const [page, setPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const [openForm, setOpenForm] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState(null);
+  const [openHistory, setOpenHistory] = useState(false);
+  const [customerHistoryId, setCustomerHistoryId] = useState(null);
 
   const fetchCustomers = React.useCallback(
     async (pageNum = 0, size = rowsPerPage) => {
@@ -56,7 +61,7 @@ export default function Customers() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     const newSize = parseInt(event.target.value, 10);
     setRowsPerPage(newSize);
     setPage(0);
@@ -83,6 +88,11 @@ export default function Customers() {
     }
   };
 
+  const handleOpenHistory = id => {
+    setCustomerHistoryId(id);
+    setOpenHistory(true);
+  };
+
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
@@ -102,13 +112,13 @@ export default function Customers() {
   return (
     <Box p={3}>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
           <Box>
-            <Typography variant="h5">Listado de Clientes</Typography>
+            <Typography variant='h5'>Listado de Clientes</Typography>
           </Box>
 
-          <Box display="flex" gap={2} alignItems="center">
-            <Button variant="contained" color="primary" onClick={handleNew}>
+          <Box display='flex' gap={2} alignItems='center'>
+            <Button variant='contained' color='primary' onClick={handleNew}>
               Agregar Cliente
             </Button>
           </Box>
@@ -118,37 +128,52 @@ export default function Customers() {
       <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)" }}>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Nombre</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Compañía</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Ciudad</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Teléfono</TableCell>
-              <TableCell align='center' sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Acciones</TableCell>
+            <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
+              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Nombre</TableCell>
+              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Compañía</TableCell>
+              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Ciudad</TableCell>
+              <TableCell sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>Teléfono</TableCell>
+              <TableCell align='center' sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {customers.map(c => (
-              <TableRow key={c.id} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.contactName}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.companyName}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.city}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{c.phone}</TableCell>
-                <TableCell align='center' sx={{ borderBottom: "1px solid #e0e0e0" }}>
+              <TableRow key={c.id} sx={{ transition: 'background 0.2s', '&:hover': { background: '#f0f6ff' } }}>
+                <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{c.contactName}</TableCell>
+                <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{c.companyName}</TableCell>
+                <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{c.city}</TableCell>
+                <TableCell sx={{ borderBottom: '1px solid #e0e0e0' }}>{c.phone}</TableCell>
+
+                <TableCell align='center' sx={{ borderBottom: '1px solid #e0e0e0' }}>
                   <Stack direction='row' spacing={1} justifyContent='center'>
-                    <IconButton color='primary' onClick={() => handleEdit(c)}>
-                      <Edit size={18} />
-                    </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(c.id)}>
-                      <Trash size={18} />
-                    </IconButton>
+                    <Tooltip title='Editar' arrow>
+                      <IconButton color='primary' onClick={() => handleEdit(c)}>
+                        <Edit size={18} />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title='Historial de pedidos' arrow>
+                      <IconButton color='secondary' onClick={() => handleOpenHistory(c.id)}>
+                        <History size={18} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Eliminar' arrow>
+                      <IconButton color='error' onClick={() => handleDelete(c.id)}>
+                        <Trash size={18} />
+                      </IconButton>
+                    </Tooltip>
                   </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
         <TablePagination
-          component="div"
+          component='div'
           count={totalElements}
           page={page}
           onPageChange={handleChangePage}
@@ -158,13 +183,14 @@ export default function Customers() {
         />
       </TableContainer>
 
-      {/* 🔹 Modal de Formulario */}
       <FormCustomer
         open={openForm}
         onClose={() => setOpenForm(false)}
         customerToEdit={customerToEdit}
         onSave={() => fetchCustomers(page)}
       />
+
+      <HistoryOrders open={openHistory} onClose={() => setOpenHistory(false)} idCustomer={customerHistoryId} />
     </Box>
   );
 }

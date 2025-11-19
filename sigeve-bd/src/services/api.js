@@ -107,4 +107,8 @@ export const ventasCategoriaApi = {
   getAll: () => api.get('/reportes/ventas-por-categoria'), 
 };
 
+export const procedimientosApi = {
+  getHistorialCliente: id => api.get(`/procedimientos/historial-cliente/${id}`)
+};
+
 export default api;
