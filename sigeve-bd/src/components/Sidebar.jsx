@@ -8,26 +8,26 @@ import ArticleIcon from '@mui/icons-material/Article';
 import MapIcon from '@mui/icons-material/Map';
 import RoomIcon from '@mui/icons-material/Room';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { useNavigate } from 'react-router-dom';
 
 export default function Sidebar() {
   const navigate = useNavigate();
 
   const menu = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
-  { text: 'Ordenes', icon: <ArticleIcon />, path: '/orders' },
-  { text: 'Productos', icon: <Inventory2Icon />, path: '/products' },
-  { text: 'Proveedores', icon: <WarehouseIcon />, path: '/suppliers' },
-  { text: 'Categorías', icon: <CategoryIcon />, path: '/categories' },
-  { text: 'Remitentes', icon: <LocalShippingIcon />, path: '/shippers' },
-  { text: 'Regiones', icon: <MapIcon />, path: '/region' },
-  { text: 'Territorios', icon: <RoomIcon />, path: '/territories' },
-  { text: 'Detalle Pedidos', icon: <DashboardIcon />, path: '/reportes/detalle-pedidos' },
-  { text: 'Reporte Ventas', icon: <DashboardIcon />, path: '/reportes/ventas-cliente-region' },
-  { text: 'Ventas por Categoría', icon: <ReceiptIcon />, path: '/reportes/ventas-por-categoria' }
-];
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+    { text: 'Clientes', icon: <PeopleIcon />, path: '/customers' },
+    { text: 'Ordenes', icon: <ArticleIcon />, path: '/orders' },
+    { text: 'Productos', icon: <Inventory2Icon />, path: '/products' },
+    { text: 'Proveedores', icon: <WarehouseIcon />, path: '/suppliers' },
+    { text: 'Categorías', icon: <CategoryIcon />, path: '/categories' },
+    { text: 'Remitentes', icon: <LocalShippingIcon />, path: '/shippers' },
+    { text: 'Regiones', icon: <MapIcon />, path: '/region' },
+    { text: 'Territorios', icon: <RoomIcon />, path: '/territories' },
+    { text: 'Detalle Pedidos', icon: <ReceiptLongIcon />, path: '/reportes/detalle-pedidos' },
+    { text: 'Reporte Ventas', icon: <BarChartIcon />, path: '/reportes/ventas-cliente-region' }
+  ];
 
 
   return (

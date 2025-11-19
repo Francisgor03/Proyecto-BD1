@@ -82,7 +82,7 @@ export default function DashboardPage() {
         gap: 3,
         width: '100%',
         justifyContent: 'center',
-        alignItems: 'flex-start'
+        alignItems: 'stretch'
       }}
     >
       <Paper
@@ -92,31 +92,43 @@ export default function DashboardPage() {
           boxShadow: 4,
           flex: 3,
           minWidth: { xs: '100%', md: '450px' },
-          maxWidth: '700px'
+          maxWidth: '700px',
+          height: 450,
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-        <Typography variant='h5' gutterBottom sx={{ mb: 1, textAlign: 'center' }}>
-          Gráfico de Ventas por Categoría
+        <Typography variant='h5' gutterBottom sx={{ mb: 2, textAlign: 'center' }}>
+          Ventas por Categoría
         </Typography>
 
-        <PieChart
-          series={[
-            {
-              data: chartData,
-              highlightScope: { faded: 'global', highlighted: 'item' },
-              faded: { innerRadius: 40, additionalRadius: -40, color: 'gray' },
-              innerRadius: 40,
-              paddingAngle: 2,
-              cornerRadius: 4,
-              outerRadius: 180
-            }
-          ]}
-          height={420}
-          width={420}
-          slotProps={{
-            legend: { hidden: true }
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
-        />
+        >
+          <PieChart
+            series={[
+              {
+                data: chartData,
+                highlightScope: { faded: 'global', highlighted: 'item' },
+                faded: { innerRadius: 40, additionalRadius: -40, color: 'gray' },
+                innerRadius: 40,
+                paddingAngle: 2,
+                cornerRadius: 4,
+                outerRadius: 160
+              }
+            ]}
+            height={350}
+            width={350}
+            slotProps={{
+              legend: { hidden: true }
+            }}
+          />
+        </Box>
       </Paper>
 
       <TableContainer
@@ -126,10 +138,13 @@ export default function DashboardPage() {
           boxShadow: 4,
           flex: 1,
           minWidth: { xs: '100%', md: '300px' },
-          maxWidth: '350px'
+          maxWidth: '350px',
+          height: 450,
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-        <Table size='small'>
+        <Table size='small' sx={{ flex: 1 }}>
           <TableHead>
             <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
               {['Cat', 'Ped', 'Und', 'Prom'].map(title => (
