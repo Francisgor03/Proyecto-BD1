@@ -18,9 +18,9 @@ import {
   Chip,
   Alert
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Edit, Trash, Eye, Plus } from 'lucide-react';
 import { orderDetailsApi, orderApi } from '../../services/api';
+import FormOrderDetail from './FormOrderDetail';
 
 export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDeleted }) {
   const [open, setOpen] = useState(false);
@@ -29,6 +29,10 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
   const [orderDetails, setOrderDetails] = useState([]);
   const [deleteOrderDialog, setDeleteOrderDialog] = useState(false);
   const [deletingOrder, setDeletingOrder] = useState(false);
+  
+  // Estados para el formulario de OrderDetail
+  const [openForm, setOpenForm] = useState(false);
+  const [orderDetailToEdit, setOrderDetailToEdit] = useState(null);
 
   useEffect(() => {
     if (open && orderId) cargarDetallesOrden();
@@ -68,11 +72,9 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
       setDeleting(productId);
       await orderDetailsApi.deleteOrderDetail(orderId, productId);
       
-      // Actualizar la lista local
       const updatedDetails = orderDetails.filter(item => item.productId !== productId);
       setOrderDetails(updatedDetails);
       
-      // Notificar al componente padre si es necesario
       if (onOrderDetailDeleted) {
         onOrderDetailDeleted();
       }
@@ -91,7 +93,6 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
       setDeletingOrder(true);
       await orderApi.remove(orderId.toString());
       
-      // Notificar al componente padre
       if (onOrderDeleted) {
         onOrderDeleted();
       }
@@ -107,6 +108,23 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
     }
   };
 
+  const handleInsertProduct = () => {
+    setOrderDetailToEdit(null);
+    setOpenForm(true);
+  };
+
+  const handleEditProduct = (orderDetail) => {
+    setOrderDetailToEdit(orderDetail);
+    setOpenForm(true);
+  };
+
+  const handleSaveDetail = () => {
+    cargarDetallesOrden(); 
+    if (onOrderDetailDeleted) {
+      onOrderDetailDeleted(); 
+    }
+  };
+
   return (
     <>
       {/* Botón para abrir el diálogo */}
@@ -116,7 +134,7 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
           onClick={() => setOpen(true)}
           size="small"
         >
-          <VisibilityIcon />
+          <Eye size={18} />
         </IconButton>
       </Tooltip>
 
@@ -143,9 +161,19 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
         </DialogTitle>
 
         <DialogContent dividers>
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Desde aquí puede gestionar los productos de la orden.
-          </Alert>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Alert severity="info" sx={{ flex: 1, mr: 2 }}>
+              Desde aquí puede gestionar los productos de la orden.
+            </Alert>
+            <Button
+              variant="contained"
+              startIcon={<Plus size={18} />}
+              onClick={handleInsertProduct}
+              color="success"
+            >
+              Insertar Producto
+            </Button>
+          </Box>
 
           {loading ? (
             <Box display='flex' justifyContent='center' alignItems='center' height={200}>
@@ -189,20 +217,34 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
                         ${calcularSubtotal(item)?.toFixed(2)}
                       </TableCell>
                       <TableCell align="center">
-                        <Tooltip title="Eliminar producto de la orden">
-                          <IconButton
-                            color="error"
-                            size="small"
-                            onClick={() => handleDeleteProduct(item.productId)}
-                            disabled={deleting === item.productId}
-                          >
-                            {deleting === item.productId ? (
-                              <CircularProgress size={20} />
-                            ) : (
-                              <DeleteIcon />
-                            )}
-                          </IconButton>
-                        </Tooltip>
+                        <Box display="flex" justifyContent="center" gap={1}>
+                          {/* Botón Editar */}
+                          <Tooltip title="Editar producto">
+                            <IconButton
+                              color="primary"
+                              size="small"
+                              onClick={() => handleEditProduct(item)}
+                            >
+                              <Edit size={18} />
+                            </IconButton>
+                          </Tooltip>
+
+                          {/* Botón Eliminar */}
+                          <Tooltip title="Eliminar producto de la orden">
+                            <IconButton
+                              color="error"
+                              size="small"
+                              onClick={() => handleDeleteProduct(item.productId)}
+                              disabled={deleting === item.productId}
+                            >
+                              {deleting === item.productId ? (
+                                <CircularProgress size={20} />
+                              ) : (
+                                <Trash size={18} />
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))
@@ -217,7 +259,7 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
             onClick={() => setDeleteOrderDialog(true)}
             color="error"
             variant="outlined"
-            startIcon={<DeleteIcon />}
+            startIcon={<Trash size={18} />}
           >
             Eliminar Orden Completa
           </Button>
@@ -260,6 +302,15 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Formulario para agregar/editar OrderDetail */}
+      <FormOrderDetail
+        open={openForm}
+        onClose={() => setOpenForm(false)}
+        orderId={orderId}
+        orderDetailToEdit={orderDetailToEdit}
+        onSave={handleSaveDetail}
+      />
     </>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { categoryApi } from '../services/api';
+import React, { useEffect, useState, useCallback } from "react";
+import { categoryApi } from "../services/api";
 import {
   Box,
   Typography,
@@ -12,43 +12,55 @@ import {
   TableRow,
   Paper,
   Alert,
-  Pagination,
+  TablePagination,
   Button,
   IconButton,
-  Stack
-} from '@mui/material';
-import { Edit, Trash } from 'lucide-react';
-import FormCategories from '../components/categories/FormCategories';
+  Stack,
+} from "@mui/material";
+import { Edit, Trash } from "lucide-react";
+import FormCategories from "../components/categories/FormCategories";
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalElements, setTotalElements] = useState(0);
   const [openForm, setOpenForm] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
 
-  const fetchCategories = async (pageNum = 0) => {
-    setLoading(true);
-    try {
-      const response = await categoryApi.getAll(pageNum, 10);
-      setCategories(response.data.content);
-      setTotalPages(response.data.totalPages);
-    } catch (err) {
-      console.error(err);
-      setError('Error al cargar las categorías');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchCategories = useCallback(
+    async (pageNum = 0, size = rowsPerPage) => {
+      setLoading(true);
+      try {
+        const response = await categoryApi.getAll(pageNum, size);
+        const data = response.data || {};
+
+        setCategories(data.content || []);
+        setTotalElements(data.totalElements ?? (data.totalPages ?? 0) * size);
+      } catch (err) {
+        console.error(err);
+        setError("Error al cargar las categorías");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [rowsPerPage]
+  );
 
   useEffect(() => {
-    fetchCategories(page);
-  }, [page]);
+    fetchCategories(page, rowsPerPage);
+  }, [fetchCategories, page, rowsPerPage]);
 
-  const handlePageChange = (event, value) => {
-    setPage(value - 1);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = parseInt(event.target.value, 10);
+    setRowsPerPage(newSize);
+    setPage(0);
   };
 
   const handleNew = () => {
@@ -56,25 +68,25 @@ export default function Categories() {
     setOpenForm(true);
   };
 
-  const handleEdit = category => {
-    setCategoryToEdit(category);
+  const handleEdit = (cat) => {
+    setCategoryToEdit(cat);
     setOpenForm(true);
   };
 
-  const handleDelete = async id => {
-    if (window.confirm('¿Seguro que deseas eliminar esta categoría?')) {
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Seguro que deseas eliminar esta categoría?")) {
       try {
         await categoryApi.remove(id);
         fetchCategories(page);
       } catch (err) {
-        console.error('Error al eliminar la categoría:', err);
+        console.error("Error al eliminar la categoría:", err);
       }
     }
   };
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
+      <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
         <CircularProgress />
       </Box>
     );
@@ -83,52 +95,90 @@ export default function Categories() {
   if (error) {
     return (
       <Box m={2}>
-        <Alert severity='error'>{error}</Alert>
+        <Alert severity="error">{error}</Alert>
       </Box>
     );
   }
 
   return (
     <Box p={3}>
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
-        <Typography variant='h5'>Lista de Categorías</Typography>
-        <Button variant='contained' color='primary' onClick={handleNew}>
-          Nueva Categoría
-        </Button>
-      </Box>
+      <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h5">Listado de Categorías</Typography>
+          <Button variant="contained" color="primary" onClick={handleNew}>
+            Agregar Categoría
+          </Button>
+        </Box>
+      </Paper>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 4, mt: 2 }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Imagen</TableCell>
-              <TableCell align='center'>Acciones</TableCell>
+            <TableRow
+              sx={{
+                background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)",
+              }}
+            >
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Nombre
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Descripción
+              </TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
+                Imagen
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}
+              >
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {categories.map(cat => (
-              <TableRow key={cat.categoryID}>
-                <TableCell>{cat.categoryName}</TableCell>
-                <TableCell>{cat.description}</TableCell>
-                <TableCell>
+            {categories.map((cat) => (
+              <TableRow
+                key={cat.categoryID}
+                sx={{
+                  transition: "background 0.2s",
+                  "&:hover": { background: "#f0f6ff" },
+                }}
+              >
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {cat.categoryName}
+                </TableCell>
+
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  {cat.description}
+                </TableCell>
+
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>
                   {cat.picture ? (
                     <img
                       src={cat.picture}
                       alt={cat.categoryName}
-                      style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8 }}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        boxShadow: "0px 3px 8px rgba(0,0,0,0.2)",
+                      }}
                     />
                   ) : (
-                    'Sin imagen'
+                    "Sin imagen"
                   )}
                 </TableCell>
-                <TableCell align='center'>
-                  <Stack direction='row' spacing={1} justifyContent='center'>
-                    <IconButton color='primary' onClick={() => handleEdit(cat)}>
+
+                <TableCell align="center" sx={{ borderBottom: "1px solid #e0e0e0" }}>
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <IconButton color="primary" onClick={() => handleEdit(cat)}>
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton color='error' onClick={() => handleDelete(cat.categoryID)}>
+
+                    <IconButton color="error" onClick={() => handleDelete(cat.categoryID)}>
                       <Trash size={18} />
                     </IconButton>
                   </Stack>
@@ -137,12 +187,19 @@ export default function Categories() {
             ))}
           </TableBody>
         </Table>
+
+        <TablePagination
+          component="div"
+          count={totalElements}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10]}
+        />
       </TableContainer>
 
-      <Box display='flex' justifyContent='center' mt={2}>
-        <Pagination count={totalPages} page={page + 1} onChange={handlePageChange} color='primary' shape='rounded' />
-      </Box>
-
+      {/* Modal */}
       <FormCategories
         open={openForm}
         onClose={() => setOpenForm(false)}
