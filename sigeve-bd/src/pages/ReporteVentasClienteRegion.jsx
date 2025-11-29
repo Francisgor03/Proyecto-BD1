@@ -13,15 +13,32 @@ import {
   Paper,
   Alert,
   TablePagination,
+  TableSortLabel
 } from '@mui/material';
+
+import ReporteToolbar from '../components/reporte-detalle-pedidos/ReporteToolBar';
 
 export default function ReporteVentasClienteRegion() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // ---------------- ORDENAMIENTO ----------------
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('cliente');
+
+  // ---------------- PAGINACIÓN ------------------
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  // ---------------- FILTROS --------------------
+  const [search, setSearch] = useState('');
+  const [fechaInicio, setFechaInicio] = useState(null);
+  const [fechaFin, setFechaFin] = useState(null);
+
+  // ============================
+  // CARGAR DATOS
+  // ============================
   useEffect(() => {
     fetchData();
   }, []);
@@ -39,25 +56,65 @@ export default function ReporteVentasClienteRegion() {
     }
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  // ============================
+  // FILTRO GLOBAL + FECHAS
+  // (si tu API no incluye fechas, solo ignora las condiciones)
+  // ============================
+  const filtrarDatos = () => {
+    return datos.filter(row => {
+      const texto = `${row.cliente} ${row.contacto} ${row.ciudad} ${row.region} ${row.pais}`.toLowerCase();
+
+      const coincideTexto = texto.includes(search.toLowerCase());
+
+      // Si NO tiene fecha, simplemente no filtra
+      if (!row.fecha) return coincideTexto;
+
+      const fecha = new Date(row.fecha);
+      const cumpleInicio = !fechaInicio || fecha >= new Date(fechaInicio);
+      const cumpleFin = !fechaFin || fecha <= new Date(fechaFin);
+
+      return coincideTexto && cumpleInicio && cumpleFin;
+    });
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    const newSize = parseInt(event.target.value, 10);
-    setRowsPerPage(newSize);
-    setPage(0);
+  // ============================
+  // ORDENAMIENTO
+  // ============================
+  const handleSort = prop => {
+    const isAsc = orderBy === prop && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(prop);
   };
 
-  // Datos paginados en el frontend
-  const datosPaginados = datos.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  const sortData = array => {
+    return [...array].sort((a, b) => {
+      const valA = a[orderBy];
+      const valB = b[orderBy];
 
+      if (typeof valA === 'string') {
+        return order === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+
+      const numA = Number(valA);
+      const numB = Number(valB);
+
+      return order === 'asc' ? numA - numB : numB - numA;
+    });
+  };
+
+  // ============================
+  // FILTRADO + ORDENADO + PAGINADO
+  // ============================
+  const filtrados = filtrarDatos();
+  const ordenados = sortData(filtrados);
+  const datosPaginados = ordenados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  // ============================
+  // LOADING / ERROR
+  // ============================
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
+      <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
         <CircularProgress />
       </Box>
     );
@@ -66,64 +123,90 @@ export default function ReporteVentasClienteRegion() {
   if (error) {
     return (
       <Box m={2}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity='error'>{error}</Alert>
       </Box>
     );
   }
 
+  // ============================
+  // RENDER FINAL
+  // ============================
   return (
     <Box p={3}>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box>
-            <Typography variant="h5">Reporte: Ventas por Cliente y Región</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Resumen de ventas totales agrupadas por cliente
-            </Typography>
-          </Box>
-        </Box>
+        <Typography variant='h5'>Reporte de Ventas por Cliente y Región</Typography>
+        <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
+          Resumen de ventas totales agrupadas por cliente
+        </Typography>
+
+        {/* TOOLBAR */}
+        <ReporteToolbar
+          data={ordenados}
+          onSearch={txt => setSearch(txt)}
+          onDateChange={(ini, fin) => {
+            setFechaInicio(ini);
+            setFechaFin(fin);
+          }}
+        />
       </Paper>
 
+      {/* TABLA */}
       <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)" }}>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Cliente</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Contacto</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Ciudad</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Región</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>País</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Total Pedidos</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Total Vendido</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>Promedio/Línea</TableCell>
+            <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
+              {[
+                { id: 'cliente', label: 'Cliente' },
+                { id: 'contacto', label: 'Contacto' },
+                { id: 'ciudad', label: 'Ciudad' },
+                { id: 'region', label: 'Región' },
+                { id: 'pais', label: 'País' },
+                { id: 'totalPedidos', label: 'Total Pedidos' },
+                { id: 'totalVendido', label: 'Total Vendido' },
+                { id: 'promedioLinea', label: 'Promedio/Línea' }
+              ].map(col => (
+                <TableCell key={col.id} sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>
+                  <TableSortLabel
+                    active={orderBy === col.id}
+                    direction={orderBy === col.id ? order : 'asc'}
+                    onClick={() => handleSort(col.id)}
+                    sx={{ color: '#fff', '& .MuiTableSortLabel-icon': { color: '#fff' } }}
+                  >
+                    {col.label}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {datosPaginados.map((row, index) => (
-              <TableRow key={index} sx={{ transition: "background 0.2s", "&:hover": { background: "#f0f6ff" } }}>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.cliente}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.contacto}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.ciudad}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.region || 'N/A'}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.pais}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>{row.totalPedidos}</TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0", fontWeight: 700, color: "#4caf50" }}>
-                  ${row.totalVendido?.toFixed(2)}
-                </TableCell>
-                <TableCell sx={{ borderBottom: "1px solid #e0e0e0" }}>${row.promedioLinea?.toFixed(2)}</TableCell>
+              <TableRow key={index} sx={{ '&:hover': { background: '#f0f6ff' } }}>
+                <TableCell>{row.cliente}</TableCell>
+                <TableCell>{row.contacto}</TableCell>
+                <TableCell>{row.ciudad}</TableCell>
+                <TableCell>{row.region || 'N/A'}</TableCell>
+                <TableCell>{row.pais}</TableCell>
+                <TableCell>{row.totalPedidos}</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#4caf50' }}>${row.totalVendido?.toFixed(2)}</TableCell>
+                <TableCell>${row.promedioLinea?.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
         <TablePagination
-          component="div"
-          count={datos.length}
+          component='div'
+          count={ordenados.length}
           page={page}
-          onPageChange={handleChangePage}
+          onPageChange={(e, newPage) => setPage(newPage)}
           rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onRowsPerPageChange={e => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
           rowsPerPageOptions={[5, 10, 25, 50]}
-          labelRowsPerPage="Filas por página:"
+          labelRowsPerPage='Filas por página:'
         />
       </TableContainer>
     </Box>
