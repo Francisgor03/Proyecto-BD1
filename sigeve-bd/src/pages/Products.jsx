@@ -99,7 +99,7 @@ export default function Products() {
   }
 
   return (
-    <Box p={3}>
+    <>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h5">Listado de Productos</Typography>
@@ -202,6 +202,6 @@ export default function Products() {
         productToEdit={productToEdit}
         onSave={() => fetchProducts(page)}
       />
-    </Box>
+    </>
   );
 }

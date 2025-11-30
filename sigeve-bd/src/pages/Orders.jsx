@@ -109,7 +109,7 @@ export default function Orders() {
   }
 
   return (
-    <Box p={3}>
+    <>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
@@ -293,6 +293,6 @@ export default function Orders() {
         orderToEdit={orderToEdit}
         onSave={() => fetchOrders(page)}
       />
-    </Box>
+    </>
   );
 }
