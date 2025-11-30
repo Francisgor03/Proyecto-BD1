@@ -50,7 +50,9 @@ export default function VentasMensuales() {
   };
 
   const datosPaginados = datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  const chartData = datos.map(row => ({ x: `${row.month}/${row.year}`, y: row.totalSales }));
+  
+  const xLabels = datos.map(row => `${row.month}/${row.year}`);
+  const yValues = datos.map(row => parseFloat(row.totalSales));
 
   if (loading) return <Box display="flex" justifyContent="center" alignItems="center" height="300px"><CircularProgress /></Box>;
   if (error) return <Alert severity="error">{error}</Alert>;
@@ -64,33 +66,43 @@ export default function VentasMensuales() {
         </Typography>
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <LineChart
-            series={[{ data: chartData, xKey: 'x', yKey: 'y', label: 'Total Ventas', line: { color: '#4f8cff', width: 3 } }]}
+            xAxis={[{ scaleType: 'point', data: xLabels }]}
+            series={[
+              { 
+                data: yValues, 
+                label: 'Total Ventas',
+                color: '#4f8cff',
+                curve: 'linear'
+              }
+            ]}
             height={350}
-            width={500}
-            slotProps={{ legend: { hidden: false, position: 'bottom' } }}
+            width={600}
+            margin={{ left: 70, right: 20, top: 20, bottom: 50 }}
           />
         </Box>
       </Paper>
 
       {/* Tabla */}
-      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 6, flex: 1, minWidth: 300, maxWidth: 350, height: 450, display: 'flex', flexDirection: 'column' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
-              {['Mes/Año', 'Total Ventas'].map(title => (
-                <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 700, py: 1 }}>{title}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {datosPaginados.map((row, index) => (
-              <TableRow key={index} sx={{ '&:hover': { background: '#e3f2fd' } }}>
-                <TableCell sx={{ py: 1 }}>{row.month}/{row.year}</TableCell>
-                <TableCell align="center">${row.totalSales?.toFixed(2)}</TableCell>
+      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 6, flex: 1, minWidth: 400, maxWidth: 450, height: 450, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <Box sx={{ overflowY: 'auto', flex: 1 }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
+                {['Mes/Año', 'Total Ventas'].map(title => (
+                  <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 700, py: 1 }}>{title}</TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {datosPaginados.map((row, index) => (
+                <TableRow key={index} sx={{ '&:hover': { background: '#e3f2fd' } }}>
+                  <TableCell sx={{ py: 1 }}>{row.month}/{row.year}</TableCell>
+                  <TableCell align="center">${row.totalSales?.toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
         <TablePagination
           component="div"
           count={totalElements}
@@ -100,6 +112,7 @@ export default function VentasMensuales() {
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[5, 10, 25]}
           labelRowsPerPage="Filas por página:"
+          sx={{ borderTop: '1px solid #e0e0e0', flexShrink: 0 }}
         />
       </TableContainer>
     </Box>
