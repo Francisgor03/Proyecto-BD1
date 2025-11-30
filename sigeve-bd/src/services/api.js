@@ -106,6 +106,14 @@ export const territoryApi = {
   remove: id => api.delete(`/territories/${id}`)
 };
 
+export const employeesApi = {
+  getAll: (page = 0, size = 5) => api.get(`/employees?page=${page}&size=${size}`),
+  getById: id => api.get(`/employees/${id}`),
+  create: data => api.post(`/employees`, data),
+  update: (id, data) => api.put(`/employees/${id}`, data),
+  remove: id => api.delete(`/employees/${id}`)
+};
+
 export const reportesApi = {
   getDetallePedidos: () => api.get('/reportes/detalle-pedidos'),
   getVentasClienteRegion: () => api.get('/reportes/ventas-cliente-region'),

@@ -22,9 +22,10 @@ import MapIcon from '@mui/icons-material/Map';
 import RoomIcon from '@mui/icons-material/Room';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import BadgeIcon from '@mui/icons-material/Badge';
 
 import { useNavigate } from 'react-router-dom';
+import { BarChartIcon } from 'lucide-react';
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -38,7 +39,8 @@ export default function Sidebar() {
         { text: 'Ordenes', icon: <ArticleIcon />, path: '/orders' },
         { text: 'Productos', icon: <Inventory2Icon />, path: '/products' },
         { text: 'Categorías', icon: <CategoryIcon />, path: '/categories' },
-        { text: 'Proveedores', icon: <WarehouseIcon />, path: '/suppliers' }
+        { text: 'Proveedores', icon: <WarehouseIcon />, path: '/suppliers' },
+        { text: 'Empleados', icon: <BadgeIcon />, path: '/employees' }
       ]
     },
     {

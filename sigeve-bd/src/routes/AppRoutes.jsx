@@ -11,14 +11,16 @@ import Region from '../pages/Region';
 import Territories from '../pages/Territories';
 import ReporteDetallePedidos from '../pages/ReporteDetallePedidos';
 import ReporteVentasClienteRegion from '../pages/ReporteVentasClienteRegion';
+import Employees from '../pages/Employees';
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-          <Route element={<DashboardLayout />}>
+        <Route element={<DashboardLayout />}>
           <Route path='/' element={<DashboardPage />} />
           <Route path='/customers' element={<Customers />} />
+          <Route path='/employees' element={<Employees />} />
           <Route path='/orders' element={<Orders />} />
           <Route path='/products' element={<Products />} />
           <Route path='/suppliers' element={<Suppliers />} />
@@ -26,7 +28,7 @@ export default function AppRoutes() {
           <Route path='/shippers' element={<Shippers />} />
           <Route path='/region' element={<Region />} />
           <Route path='/territories' element={<Territories />} />
-          <Route path= '/reportes/detalle-pedidos' element={<ReporteDetallePedidos/>} />
+          <Route path='/reportes/detalle-pedidos' element={<ReporteDetallePedidos />} />
           <Route path='/reportes/ventas-cliente-region' element={<ReporteVentasClienteRegion />} />
         </Route>
       </Routes>
