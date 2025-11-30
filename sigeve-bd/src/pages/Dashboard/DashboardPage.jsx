@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import VentasCategoria from "./ventasCategoria/VentasCategoria";
 import VentasMensuales from "./ventasMensuales/VentasMensuales";
+import ProductosMasVendidos from "./productosMasVendidos/ProductosMasVendidos";
 
 export default function DashboardPage() {
   return (
@@ -15,6 +16,9 @@ export default function DashboardPage() {
 
       {/* Bloque Ventas Mensuales */}
       <VentasMensuales />
+
+      {/* Bloque Productos Más Vendidos */}
+      <ProductosMasVendidos />
     </Box>
   );
 }

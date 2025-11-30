@@ -136,6 +136,11 @@ export const ventasMensualesApi = {
   getAll: () => api.get('/reportes/ventas-mensuales'),
 };
 
+// Productos más vendidos
+export const productosMasVendidosApi = {
+  getAll: () => api.get('/reportes/productos-mas-vendidos'),
+};
+
 // Procedimientos
 export const procedimientosApi = {
   getHistorialCliente: id => api.get(`/procedimientos/historial-cliente/${id}`)
