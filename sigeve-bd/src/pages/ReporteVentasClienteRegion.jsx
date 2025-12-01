@@ -16,8 +16,8 @@ import {
   TableSortLabel
 } from '@mui/material';
 
-import ReporteToolbar from '../components/reporte-detalle-pedidos/ReporteToolBar';
-
+import SearchDropdown from '../components/searchDropdown'; // Ajusta la ruta según tu estructura
+import ExportExcelButton from '../components/exportExcelButton';
 export default function ReporteVentasClienteRegion() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,9 @@ export default function ReporteVentasClienteRegion() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // ---------------- FILTROS --------------------
-  const [search, setSearch] = useState('');
+  const [clienteFilter, setClienteFilter] = useState('');
+  const [paisFilter, setPaisFilter] = useState('');
+  const [ciudadFilter, setCiudadFilter] = useState('');
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
 
@@ -57,23 +59,30 @@ export default function ReporteVentasClienteRegion() {
   };
 
   // ============================
-  // FILTRO GLOBAL + FECHAS
-  // (si tu API no incluye fechas, solo ignora las condiciones)
+  // FILTRO CON DROPDOWNS
   // ============================
   const filtrarDatos = () => {
     return datos.filter(row => {
-    const texto = `${row.cliente} ${row.pais} ${row.ciudad} ${row.region}`.toLowerCase();
+      // Filtro por cliente
+      const coincideCliente = !clienteFilter || 
+        row.cliente.toLowerCase().includes(clienteFilter.toLowerCase());
+      
+      // Filtro por país
+      const coincidePais = !paisFilter ||
+        row.pais.toLowerCase().includes(paisFilter.toLowerCase());
+      
+      // Filtro por ciudad
+      const coincideCiudad = !ciudadFilter ||
+        row.ciudad.toLowerCase().includes(ciudadFilter.toLowerCase());
 
-      const coincideTexto = texto.includes(search.toLowerCase());
-
-      // Si NO tiene fecha, simplemente no filtra
-      if (!row.fecha) return coincideTexto;
+      // Filtro por fechas (si aplica)
+      if (!row.fecha) return coincideCliente && coincidePais && coincideCiudad;
 
       const fecha = new Date(row.fecha);
       const cumpleInicio = !fechaInicio || fecha >= new Date(fechaInicio);
       const cumpleFin = !fechaFin || fecha <= new Date(fechaFin);
 
-      return coincideTexto && cumpleInicio && cumpleFin;
+      return coincideCliente && coincidePais && coincideCiudad && cumpleInicio && cumpleFin;
     });
   };
 
@@ -134,20 +143,46 @@ export default function ReporteVentasClienteRegion() {
   return (
     <Box p={3}>
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
-        <Typography variant='h5'>Reporte de Ventas por Cliente y Región</Typography>
-        <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
-          Resumen de ventas totales agrupadas por cliente
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Box>
+            <Typography variant='h5'>Reporte de Ventas por Cliente y Región</Typography>
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
+              Resumen de ventas totales agrupadas por cliente
+            </Typography>
+          </Box>
+          <ExportExcelButton 
+            data={ordenados}
+            filename="ventas_cliente_region"
+            buttonText="Exportar Excel"
+          />
+        </Box>
 
-        {/* TOOLBAR */}
-        <ReporteToolbar
-          data={ordenados}
-          onSearch={txt => setSearch(txt)}
-          onDateChange={(ini, fin) => {
-            setFechaInicio(ini);
-            setFechaFin(fin);
-          }}
-        />
+        {/* DROPDOWNS DE FILTRO */}
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2, flexWrap: 'wrap' }}>
+          <SearchDropdown 
+            data={ordenados}
+            onFilterSelect={setClienteFilter}
+            filterType="cliente"
+            label="Buscar cliente..."
+            width={250}
+          />
+          
+          <SearchDropdown 
+            data={ordenados}
+            onFilterSelect={setPaisFilter}
+            filterType="pais"
+            label="Filtrar por país..."
+            width={200}
+          />
+          
+          <SearchDropdown 
+            data={ordenados}
+            onFilterSelect={setCiudadFilter}
+            filterType="ciudad"
+            label="Filtrar por ciudad..."
+            width={200}
+          />
+        </Box>
       </Paper>
 
       {/* TABLA */}
@@ -155,25 +190,25 @@ export default function ReporteVentasClienteRegion() {
         <Table>
           <TableHead>
             <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
-             {[
-              { id: 'cliente', label: 'Cliente' },
-              { id: 'pais', label: 'País' },
-              { id: 'ciudad', label: 'Ciudad' },
-              { id: 'totalPedidos', label: 'Total Pedidos' },
-              { id: 'totalVendido', label: 'Total Vendido' },
-              { id: 'promedioLinea', label: 'Promedio/Línea' }
-            ].map(col => (
-              <TableCell key={col.id} sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>
-                <TableSortLabel
-                  active={orderBy === col.id}
-                  direction={orderBy === col.id ? order : 'asc'}
-                  onClick={() => handleSort(col.id)}
-                  sx={{ color: '#fff', '& .MuiTableSortLabel-icon': { color: '#fff' } }}
-                >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
+              {[
+                { id: 'cliente', label: 'Cliente' },
+                { id: 'pais', label: 'País' },
+                { id: 'ciudad', label: 'Ciudad' },
+                { id: 'totalPedidos', label: 'Total Pedidos' },
+                { id: 'totalVendido', label: 'Total Vendido' },
+                { id: 'promedioLinea', label: 'Promedio/Línea' }
+              ].map(col => (
+                <TableCell key={col.id} sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>
+                  <TableSortLabel
+                    active={orderBy === col.id}
+                    direction={orderBy === col.id ? order : 'asc'}
+                    onClick={() => handleSort(col.id)}
+                    sx={{ color: '#fff', '& .MuiTableSortLabel-icon': { color: '#fff' } }}
+                  >
+                    {col.label}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
 

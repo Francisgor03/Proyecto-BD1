@@ -16,17 +16,23 @@ import {
   TableSortLabel
 } from '@mui/material';
 
-import ReporteToolbar from '../components/reporte-detalle-pedidos/ReporteToolBar';
+// CAMBIO: Eliminar ReporteToolbar, mantener los otros imports
+import ExportExcelButton from '../components/exportExcelButton';
+import SearchDropdown from '../components/searchDropdown';
 
 export default function ReporteDetallePedidos() {
   const [datos, setDatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('idPedido');
+  // CAMBIO: Cambiar ordenamiento por defecto a cliente
+  const [orderBy, setOrderBy] = useState('cliente');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [search, setSearch] = useState('');
+  
+  // CAMBIO: Reemplazar search por filtros específicos
+  const [clienteFilter, setClienteFilter] = useState('');
+  const [productoFilter, setProductoFilter] = useState('');
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
 
@@ -48,15 +54,17 @@ export default function ReporteDetallePedidos() {
 
   const filtrarDatos = () => {
     return datos.filter(row => {
-      const texto = `${row.cliente} ${row.producto} ${row.ciudad} ${row.categoria} ${row.idPedido}`.toLowerCase();
-
-      const coincideTexto = texto.includes(search.toLowerCase());
+      const coincideCliente = !clienteFilter || 
+        row.cliente.toLowerCase().includes(clienteFilter.toLowerCase());
+      
+      const coincideProducto = !productoFilter ||
+        row.producto.toLowerCase().includes(productoFilter.toLowerCase());
 
       const fecha = new Date(row.fechaPedido);
       const cumpleInicio = !fechaInicio || fecha >= new Date(fechaInicio);
       const cumpleFin = !fechaFin || fecha <= new Date(fechaFin);
 
-      return coincideTexto && cumpleInicio && cumpleFin;
+      return coincideCliente && coincideProducto && cumpleInicio && cumpleFin;
     });
   };
 
@@ -107,19 +115,39 @@ export default function ReporteDetallePedidos() {
     <Box p={3}>
       {/* HEADER DEL REPORTE */}
       <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
-        <Typography variant='h5'>Reporte de detalle de Pedidos</Typography>
-        <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
-          Vista completa de pedidos con productos y totales
-        </Typography>
-        <ReporteToolbar
-          data={ordenados} // <-- exportar Excel usa esta data
-          onSearch={txt => setSearch(txt)} // <-- buscador
-          onDateChange={(ini, fin) => {
-            // <-- fechas
-            setFechaInicio(ini);
-            setFechaFin(fin);
-          }}
-        />
+        {/* CAMBIO: Header con botón exportar */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Box>
+            <Typography variant='h5'>Reporte de detalle de Pedidos</Typography>
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 0.5 }}>
+              Vista completa de pedidos con productos y totales
+            </Typography>
+          </Box>
+          <ExportExcelButton 
+            data={ordenados}
+            filename="detalle_pedidos"
+            buttonText="Exportar Excel"
+          />
+        </Box>
+        
+        {/* CAMBIO: Dropdowns de filtro */}
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2, flexWrap: 'wrap' }}>
+          <SearchDropdown 
+            data={ordenados}
+            onFilterSelect={setClienteFilter}
+            filterType="cliente"
+            label="Filtrar por cliente..."
+            width={250}
+          />
+          
+          <SearchDropdown 
+            data={ordenados}
+            onFilterSelect={setProductoFilter}
+            filterType="producto"
+            label="Filtrar por producto..."
+            width={250}
+          />
+        </Box>
       </Paper>
 
       {/* TABLA */}
@@ -127,13 +155,10 @@ export default function ReporteDetallePedidos() {
         <Table>
           <TableHead>
             <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
+              {/* CAMBIO: Columnas reducidas - eliminar idPedido, fechaPedido, ciudad, categoria */}
               {[
-                { id: 'idPedido', label: 'ID Pedido' },
-                { id: 'fechaPedido', label: 'Fecha' },
                 { id: 'cliente', label: 'Cliente' },
-                { id: 'ciudad', label: 'Ciudad' },
                 { id: 'producto', label: 'Producto' },
-                { id: 'categoria', label: 'Categoría' },
                 { id: 'cantidad', label: 'Cantidad' },
                 { id: 'precioUnitario', label: 'Precio Unit.' },
                 { id: 'descuento', label: 'Descuento' },
@@ -157,14 +182,11 @@ export default function ReporteDetallePedidos() {
           </TableHead>
 
           <TableBody>
+            {/* CAMBIO: Solo mostrar columnas visibles */}
             {datosPaginados.map((row, index) => (
               <TableRow key={index} sx={{ '&:hover': { background: '#f0f6ff' } }}>
-                <TableCell>{row.idPedido}</TableCell>
-                <TableCell>{row.fechaPedido}</TableCell>
                 <TableCell>{row.cliente}</TableCell>
-                <TableCell>{row.ciudad}</TableCell>
                 <TableCell>{row.producto}</TableCell>
-                <TableCell>{row.categoria}</TableCell>
                 <TableCell>{row.cantidad}</TableCell>
                 <TableCell>${row.precioUnitario?.toFixed(2)}</TableCell>
                 <TableCell>{(row.descuento * 100).toFixed(0)}%</TableCell>
