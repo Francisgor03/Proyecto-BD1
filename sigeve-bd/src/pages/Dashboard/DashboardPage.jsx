@@ -16,19 +16,14 @@ export default function DashboardPage() {
   return (
     <Box sx={{ minHeight: '100vh', background: 'transparent', py: 3 }}>
       <div className="app-container">
-        {/* Header: title left, small actions right */}
         <Box sx={{ mb: 2, pb: 2, borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 800, color: 'var(--text)', mb: 0.5 }}>Dashboard de Ventas</Typography>
               <Typography variant="body2" sx={{ color: 'var(--muted)' }}>Visualización de datos y métricas clave</Typography>
             </Box>
-
-            {/* right-side actions removed to keep header minimal */}
           </Box>
         </Box>
-
-        {/* Tabs de navegación (compactas) */}
         <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
           {vistas.map((vista) => (
             <Chip
@@ -49,8 +44,6 @@ export default function DashboardPage() {
             />
           ))}
         </Box>
-
-        {/* Contenido: contenedor sutil para separar visualmente */}
         <Box sx={{ background: 'var(--card-bg)', borderRadius: 2, boxShadow: 'var(--card-shadow)', p: 2 }}>
           {vistaActiva === 'categorias' && <VentasCategoria />}
           {vistaActiva === 'mensuales' && <VentasMensuales />}
