@@ -11,12 +11,17 @@ export default function SearchDropdown({
   onFilterSelect, 
   filterType, 
   label,
-  width = 300 
+  width = 300, 
+  // orderdetaildropdown: Nuevas props para modo avanzado
+  advancedMode = false,
+  options = [],
+  getOptionLabel,
+  renderOption,
+  loading = false
 }) {
-  const [options, setOptions] = useState([]);
+  const [internalOptions, setInternalOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState(null);
 
-  // Mapeo de tipos de filtro a campos de datos
   const fieldMap = {
     cliente: 'cliente',
     pais: 'pais', 
@@ -27,29 +32,32 @@ export default function SearchDropdown({
     region: 'region'
   };
 
-  // Extraer opciones únicas basadas en el tipo de filtro
+  // Modo simple: extraer opciones de data
   useEffect(() => {
-    if (data && data.length > 0 && fieldMap[filterType]) {
+    if (!advancedMode && data && data.length > 0 && fieldMap[filterType]) {
       const field = fieldMap[filterType];
       const opcionesUnicas = [...new Set(data.map(item => item[field]))]
-        .filter(item => item != null && item !== '') // Filtrar nulos/vacíos
+        .filter(item => item != null && item !== '')
         .sort();
-      setOptions(opcionesUnicas);
+      setInternalOptions(opcionesUnicas);
     }
-  }, [data, filterType]);
+  }, [data, filterType, advancedMode]);
+  // Usar options proporcionadas en modo avanzado, o internalOptions en modo simple
+  const finalOptions = advancedMode ? options : internalOptions;
 
   const handleChange = (event, newValue) => {
     setSelectedValue(newValue);
     onFilterSelect(newValue || '');
   };
 
-  return (
+    return (
     <Box sx={{ width }}>
       <Autocomplete
         value={selectedValue}
         onChange={handleChange}
-        options={options}
-        getOptionLabel={(option) => option?.toString() || ''}
+        options={finalOptions}
+        getOptionLabel={advancedMode ? getOptionLabel : (option) => option?.toString() || ''}
+        loading={loading}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -60,7 +68,7 @@ export default function SearchDropdown({
         )}
         freeSolo
         clearOnBlur={false}
-        renderOption={(props, option) => (
+        renderOption={advancedMode ? renderOption : (props, option) => (
           <li {...props}>
             <Typography noWrap>{option}</Typography>
           </li>

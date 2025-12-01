@@ -16,7 +16,7 @@ import {
   TableSortLabel
 } from '@mui/material';
 
-import SearchDropdown from '../components/searchDropdown'; // Ajusta la ruta según tu estructura
+import SearchDropdown from '../components/searchDropdown'; 
 import ExportExcelButton from '../components/exportExcelButton';
 export default function ReporteVentasClienteRegion() {
   const [datos, setDatos] = useState([]);

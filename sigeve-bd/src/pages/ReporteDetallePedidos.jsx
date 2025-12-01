@@ -16,7 +16,6 @@ import {
   TableSortLabel
 } from '@mui/material';
 
-// CAMBIO: Eliminar ReporteToolbar, mantener los otros imports
 import ExportExcelButton from '../components/exportExcelButton';
 import SearchDropdown from '../components/searchDropdown';
 

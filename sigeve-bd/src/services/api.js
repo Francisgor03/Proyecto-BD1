@@ -51,9 +51,13 @@ export const orderApi = {
   remove: id => api.delete(`/orders/${id}`)
 };
 
-// Detalle de pedidos
+
+// Detalle de pedidos - VERSIÓN FINAL VERIFICADA
 export const orderDetailsApi = {
   getByOrderId: orderId => api.get(`/orderDetails/order/${orderId}`),
+  create: data => api.post('/orderDetails', data),
+  update: (id, data) => api.put(`/orderDetails/${id}`, data), // id = "orderId-productId"
+  remove: id => api.delete(`/orderDetails/${id}`), // id = "orderId-productId"
   deleteOrderDetail: (orderId, productId) => api.delete(`/orderDetails/order/${orderId}/product/${productId}`)
 };
 

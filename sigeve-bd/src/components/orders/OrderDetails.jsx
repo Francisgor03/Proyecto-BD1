@@ -19,7 +19,9 @@ import {
   Alert
 } from '@mui/material';
 import { Edit, Trash, Eye, Plus } from 'lucide-react';
-import { orderDetailsApi, orderApi } from '../../services/api';
+//import { orderDetailsApi, orderApi } from '../../../services/api';
+import { orderApi } from '/src/services/api';
+import { orderDetailsApi } from '/src/services/api';
 import FormOrderDetail from './FormOrderDetail';
 
 export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDeleted }) {
@@ -88,25 +90,39 @@ export default function OrderDetails({ orderId, onOrderDetailDeleted, onOrderDel
     }
   };
 
-  const handleDeleteOrder = async () => {
-    try {
-      setDeletingOrder(true);
-      await orderApi.remove(orderId.toString());
-      
-      if (onOrderDeleted) {
-        onOrderDeleted();
+ const handleDeleteOrder = async () => {
+  try {
+    setDeletingOrder(true);
+    
+    // Primero intenta eliminar todos los detalles
+    if (orderDetails.length > 0) {
+      for (const detail of orderDetails) {
+        try {
+          await orderDetailsApi.deleteOrderDetail(orderId, detail.productId);
+        } catch (detailError) {
+          console.error(`Error eliminando producto ${detail.productId}:`, detailError);
+        }
       }
-      
-      setDeleteOrderDialog(false);
-      setOpen(false);
-      alert(`Orden ${orderId} eliminada correctamente`);
-    } catch (error) {
-      console.error('Error eliminando orden:', error);
-      alert('Error al eliminar la orden');
-    } finally {
-      setDeletingOrder(false);
     }
-  };
+    
+    // Luego elimina la orden
+    await orderApi.remove(orderId.toString());
+    
+    if (onOrderDeleted) {
+      onOrderDeleted();
+    }
+    
+    setDeleteOrderDialog(false);
+    setOpen(false);
+    alert(`Orden ${orderId} eliminada correctamente`);
+  } catch (error) {
+    console.error('Error eliminando orden:', error);
+    console.error('Error response:', error.response?.data);
+    alert(`Error al eliminar la orden: ${error.response?.data?.message || error.message}`);
+  } finally {
+    setDeletingOrder(false);
+  }
+};
 
   const handleInsertProduct = () => {
     setOrderDetailToEdit(null);
