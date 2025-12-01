@@ -59,13 +59,31 @@ export default function ProductosMasVendidos() {
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, width: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, width: '100%' }}>
       {/* BarChart */}
-      <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 6, flex: 3, minWidth: 450, maxWidth: 800, height: 500 }}>
-        <Typography variant="h5" sx={{ textAlign: 'center', mb: 2, fontWeight: 600 }}>
-          Top 10 Productos Más Vendidos
+      <Paper 
+        sx={{ 
+          p: 3, 
+          borderRadius: 2, 
+          background: '#fff',
+          border: '1px solid #e0e0e0',
+          flex: 3, 
+          minWidth: 450, 
+          maxWidth: 800, 
+          height: 490,
+        }}
+      >
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 2, 
+            fontWeight: 600,
+            color: '#444',
+          }}
+        >
+          Top 10 Productos
         </Typography>
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <BarChart
             xAxis={[{ 
               scaleType: 'band', 
@@ -80,7 +98,7 @@ export default function ProductosMasVendidos() {
               { 
                 data: unitsSold, 
                 label: 'Unidades Vendidas',
-                color: '#4f8cff',
+                color: '#1976d2',
               }
             ]}
             height={400}
@@ -91,21 +109,42 @@ export default function ProductosMasVendidos() {
       </Paper>
 
       {/* Tabla */}
-      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 6, flex: 1, minWidth: 400, maxWidth: 450, height: 500, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          borderRadius: 2, 
+          background: '#fff',
+          border: '1px solid #e0e0e0',
+          flex: 1, 
+          minWidth: 400, 
+          maxWidth: 450, 
+          height: 490, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: 'hidden',
+        }}
+      >
         <Box sx={{ overflowY: 'auto', flex: 1 }}>
           <Table size="small">
             <TableHead>
-              <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
-                {['Producto', 'Unidades Vendidas'].map(title => (
-                  <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 700, py: 1 }}>{title}</TableCell>
+              <TableRow sx={{ background: '#1976d2' }}>
+                {['Producto', 'Unidades'].map(title => (
+                  <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 600, py: 1.2 }}>{title}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {datosPaginados.map((row, index) => (
-                <TableRow key={index} sx={{ '&:hover': { background: '#e3f2fd' } }}>
-                  <TableCell sx={{ py: 1 }}>{row.productName}</TableCell>
-                  <TableCell align="center">{row.totalUnitsSold}</TableCell>
+                <TableRow 
+                  key={index} 
+                  sx={{ 
+                    '&:hover': { 
+                      background: '#f5f5f5',
+                    }
+                  }}
+                >
+                  <TableCell sx={{ py: 1.2, fontWeight: 500, color: '#333' }}>{row.productName}</TableCell>
+                  <TableCell align="center" sx={{ color: '#1976d2', fontWeight: 500 }}>{row.totalUnitsSold}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -119,8 +158,11 @@ export default function ProductosMasVendidos() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[5, 10, 25]}
-          labelRowsPerPage="Filas por página:"
-          sx={{ borderTop: '1px solid #e0e0e0', flexShrink: 0 }}
+          labelRowsPerPage="Filas:"
+          sx={{ 
+            borderTop: '1px solid #e0e0e0', 
+            flexShrink: 0,
+          }}
         />
       </TableContainer>
     </Box>
