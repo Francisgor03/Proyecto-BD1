@@ -158,12 +158,10 @@ export default function ReporteVentasClienteRegion() {
              {[
               { id: 'cliente', label: 'Cliente' },
               { id: 'pais', label: 'País' },
-              { id: 'region', label: 'Región' },
               { id: 'ciudad', label: 'Ciudad' },
               { id: 'totalPedidos', label: 'Total Pedidos' },
               { id: 'totalVendido', label: 'Total Vendido' },
               { id: 'promedioLinea', label: 'Promedio/Línea' }
-              // Removimos 'contacto' de la tabla principal
             ].map(col => (
               <TableCell key={col.id} sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', border: 0 }}>
                 <TableSortLabel
@@ -184,7 +182,6 @@ export default function ReporteVentasClienteRegion() {
               <TableRow key={index} sx={{ '&:hover': { background: '#f0f6ff' } }}>
                 <TableCell>{row.cliente}</TableCell>
                 <TableCell>{row.pais}</TableCell>
-                <TableCell>{row.region || 'N/A'}</TableCell>
                 <TableCell>{row.ciudad}</TableCell>
                 <TableCell>{row.totalPedidos}</TableCell>
                 <TableCell sx={{ fontWeight: 700, color: '#4caf50' }}>${row.totalVendido?.toFixed(2)}</TableCell>
