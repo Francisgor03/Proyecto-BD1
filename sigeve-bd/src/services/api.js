@@ -33,6 +33,7 @@ api.interceptors.response.use(
   }
 );
 
+// Clientes
 export const customerApi = {
   getAll: (page = 0, size = 5) => api.get(`/customers?page=${page}&size=${size}`),
   getById: id => api.get(`/customers/${id}`),
@@ -41,6 +42,7 @@ export const customerApi = {
   remove: id => api.delete(`/customers/${id}`)
 };
 
+// Pedidos
 export const orderApi = {
   getAll: (page = 0, size = 5) => api.get(`/orders?page=${page}&size=${size}`),
   getById: id => api.get(`/orders/${id}`),
@@ -49,14 +51,13 @@ export const orderApi = {
   remove: id => api.delete(`/orders/${id}`)
 };
 
+// Detalle de pedidos
 export const orderDetailsApi = {
-  getByOrderId: (orderId) => 
-    api.get(`/orderDetails/order/${orderId}`),
-    
-  deleteOrderDetail: (orderId, productId) => 
-    api.delete(`/orderDetails/order/${orderId}/product/${productId}`)
+  getByOrderId: orderId => api.get(`/orderDetails/order/${orderId}`),
+  deleteOrderDetail: (orderId, productId) => api.delete(`/orderDetails/order/${orderId}/product/${productId}`)
 };
 
+// Productos
 export const productApi = {
   getAll: (page = 0, size = 5) => api.get(`/products?page=${page}&size=${size}`),
   getById: id => api.get(`/products/${id}`),
@@ -65,6 +66,7 @@ export const productApi = {
   remove: id => api.delete(`/products/${id}`)
 };
 
+// Proveedores
 export const supplierApi = {
   getAll: (page = 0, size = 5) => api.get(`/suppliers?page=${page}&size=${size}`),
   getById: id => api.get(`/suppliers/${id}`),
@@ -73,6 +75,7 @@ export const supplierApi = {
   remove: id => api.delete(`/suppliers/${id}`)
 };
 
+// Categorías
 export const categoryApi = {
   getAll: (page = 0, size = 5) => api.get(`/categories?page=${page}&size=${size}`),
   getById: id => api.get(`/categories/${id}`),
@@ -81,6 +84,7 @@ export const categoryApi = {
   remove: id => api.delete(`/categories/${id}`)
 };
 
+// Transportistas
 export const shipperApi = {
   getAll: (page = 0, size = 5) => api.get(`/shippers?page=${page}&size=${size}`),
   getById: id => api.get(`/shippers/${id}`),
@@ -89,6 +93,7 @@ export const shipperApi = {
   remove: id => api.delete(`/shippers/${id}`)
 };
 
+// Región
 export const regionApi = {
   getAll: (page = 0, size = 5) => api.get(`/region?page=${page}&size=${size}`),
   getById: id => api.get(`/region/${id}`),
@@ -97,7 +102,7 @@ export const regionApi = {
   remove: id => api.delete(`/region/${id}`)
 };
 
-
+// Territorios
 export const territoryApi = {
   getAll: (page = 0, size = 5) => api.get(`/territories?page=${page}&size=${size}`),
   getById: id => api.get(`/territories/${id}`),
@@ -106,6 +111,7 @@ export const territoryApi = {
   remove: id => api.delete(`/territories/${id}`)
 };
 
+// Empleados
 export const employeesApi = {
   getAll: (page = 0, size = 5) => api.get(`/employees?page=${page}&size=${size}`),
   getById: id => api.get(`/employees/${id}`),
@@ -114,18 +120,30 @@ export const employeesApi = {
   remove: id => api.delete(`/employees/${id}`)
 };
 
+// Reportes generales
 export const reportesApi = {
   getDetallePedidos: () => api.get('/reportes/detalle-pedidos'),
   getVentasClienteRegion: () => api.get('/reportes/ventas-cliente-region'),
 };
 
+// Ventas por categoría
 export const ventasCategoriaApi = {
   getAll: () => api.get('/reportes/ventas-por-categoria'), 
 };
 
+// Ventas mensuales
+export const ventasMensualesApi = {
+  getAll: () => api.get('/reportes/ventas-mensuales'),
+};
+
+// Productos más vendidos
+export const productosMasVendidosApi = {
+  getAll: () => api.get('/reportes/productos-mas-vendidos'),
+};
+
+// Procedimientos
 export const procedimientosApi = {
   getHistorialCliente: id => api.get(`/procedimientos/historial-cliente/${id}`)
 };
-
 
 export default api;

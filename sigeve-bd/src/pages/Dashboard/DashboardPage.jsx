@@ -1,198 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import { ventasCategoriaApi } from '../../services/api';
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Alert,
-  TablePagination,
-} from '@mui/material';
-import { PieChart } from '@mui/x-charts/PieChart';
+import React, { useState } from "react";
+import { Box, Typography, Container, Button, Chip } from "@mui/material";
+import VentasCategoria from "./ventasCategoria/VentasCategoria";
+import VentasMensuales from "./ventasMensuales/VentasMensuales";
+import ProductosMasVendidos from "./productosMasVendidos/ProductosMasVendidos";
 
 export default function DashboardPage() {
-  const [datos, setDatos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [totalElements, setTotalElements] = useState(0);
+  const [vistaActiva, setVistaActiva] = useState('categorias');
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await ventasCategoriaApi.getAll();
-      const data = response.data || [];
-      setDatos(data);
-      setTotalElements(data.length);
-    } catch (err) {
-      console.error(err);
-      setError('Error al cargar el reporte');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleChangePage = (event, newPage) => setPage(newPage);
-
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const datosPaginados = datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-  const chartData = datos.map((row, index) => ({
-    id: index,
-    value: row.totalUnidadesVendidas,
-    label: row.nombreCategoria
-  }));
-
-  if (loading) {
-    return (
-      <Box display='flex' justifyContent='center' alignItems='center' height='70vh'>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box m={2}>
-        <Alert severity='error'>{error}</Alert>
-      </Box>
-    );
-  }
+  const vistas = [
+    { id: 'categorias', label: 'Por Categoría', color: '#2196f3' },
+    { id: 'mensuales', label: 'Mensuales', color: '#1976d2' },
+    { id: 'productos', label: 'Top Productos', color: '#1565c0' },
+  ];
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: 3,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'stretch'
+    <Box 
+      sx={{ 
+        minHeight: '100vh',
+        background: '#f5f5f5',
+        py: 3,
       }}
     >
-      <Paper
-        sx={{
-          p: 3,
-          borderRadius: 3,
-          boxShadow: 4,
-          flex: 3,
-          minWidth: { xs: '100%', md: '450px' },
-          maxWidth: '700px',
-          height: 450,
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Typography variant='h5' gutterBottom sx={{ mb: 2, textAlign: 'center' }}>
-          Ventas por Categoría
-        </Typography>
-
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <PieChart
-            series={[
-              {
-                data: chartData,
-                highlightScope: { faded: 'global', highlighted: 'item' },
-                faded: { innerRadius: 40, additionalRadius: -40, color: 'gray' },
-                innerRadius: 40,
-                paddingAngle: 2,
-                cornerRadius: 4,
-                outerRadius: 160
-              }
-            ]}
-            height={350}
-            width={350}
-            slotProps={{
-              legend: { hidden: true }
+      <Container maxWidth="xl">
+        {/* Header */}
+        <Box sx={{ mb: 3 }}>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: 700, 
+              color: '#333',
+              mb: 0.5,
             }}
-          />
+          >
+            Dashboard de Ventas
+          </Typography>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: '#666',
+            }}
+          >
+            Visualización de datos
+          </Typography>
         </Box>
-      </Paper>
 
-      <TableContainer
-        component={Paper}
-        sx={{
-          borderRadius: 3,
-          boxShadow: 4,
-          flex: 1,
-          minWidth: { xs: '100%', md: '300px' },
-          maxWidth: '350px',
-          height: 450,
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Table size='small' sx={{ flex: 1 }}>
-          <TableHead>
-            <TableRow sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)' }}>
-              {['Cat', 'Ped', 'Und', 'Prom'].map(title => (
-                <TableCell
-                  key={title}
-                  align='center'
-                  sx={{
-                    color: '#fff',
-                    fontWeight: 700,
-                    padding: '6px',
-                    fontSize: '.8rem'
-                  }}
-                >
-                  {title}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+        {/* Tabs de navegación */}
+        <Box sx={{ display: 'flex', gap: 1.5, mb: 3, flexWrap: 'wrap' }}>
+          {vistas.map((vista) => (
+            <Chip
+              key={vista.id}
+              label={vista.label}
+              onClick={() => setVistaActiva(vista.id)}
+              sx={{
+                px: 2,
+                py: 2.5,
+                fontSize: '0.95rem',
+                fontWeight: vistaActiva === vista.id ? 600 : 500,
+                bgcolor: vistaActiva === vista.id ? vista.color : '#fff',
+                color: vistaActiva === vista.id ? '#fff' : '#555',
+                border: vistaActiva === vista.id ? 'none' : '1px solid #ddd',
+                cursor: 'pointer',
+                '&:hover': {
+                  bgcolor: vistaActiva === vista.id ? vista.color : '#fafafa',
+                },
+              }}
+            />
+          ))}
+        </Box>
 
-          <TableBody>
-            {datosPaginados.map((row, index) => (
-              <TableRow key={index} sx={{ transition: '0.2s', '&:hover': { background: '#f0f6ff' } }}>
-                <TableCell sx={{ padding: '6px', fontSize: '.8rem' }}>{row.nombreCategoria}</TableCell>
-                <TableCell align='center' sx={{ padding: '6px', fontSize: '.8rem' }}>
-                  {row.totalPedidos}
-                </TableCell>
-                <TableCell align='center' sx={{ padding: '6px', fontSize: '.8rem' }}>
-                  {row.totalUnidadesVendidas}
-                </TableCell>
-                <TableCell align='center' sx={{ padding: '6px', fontSize: '.8rem' }}>
-                  ${row.precioPromedioVenta?.toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-
-        <TablePagination
-          component='div'
-          count={totalElements}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-          labelRowsPerPage='Filas por página:'
-        />
-      </TableContainer>
+        {/* Contenido */}
+        <Box>
+          {vistaActiva === 'categorias' && <VentasCategoria />}
+          {vistaActiva === 'mensuales' && <VentasMensuales />}
+          {vistaActiva === 'productos' && <ProductosMasVendidos />}
+        </Box>
+      </Container>
     </Box>
   );
 }
