@@ -111,50 +111,50 @@ export default function Suppliers() {
         </Box>
       </Paper>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 4, maxHeight: 'calc(100vh - 250px)', overflow: 'auto' }}>
-        <Table sx={{ minWidth: 1200 }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 4, maxHeight: 'calc(100vh - 250px)', overflow: 'auto', p: 2 }}>
+        <Table sx={{ width: '100%' }}>
           <TableHead>
             <TableRow
               sx={{
                 background: "linear-gradient(90deg, #4f8cff 0%, #6ed6ff 100%)",
               }}
             >
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Compañía
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Contacto
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Título de Contacto
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Dirección
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Ciudad
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Región
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Código Postal
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 País
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Teléfono
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Fax
               </TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}>
+              <TableCell sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}>
                 Página Web
               </TableCell>
               <TableCell
                 align="center"
-                sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0, whiteSpace: 'nowrap' }}
+                sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", border: 0 }}
               >
                 Acciones
               </TableCell>
@@ -170,17 +170,17 @@ export default function Suppliers() {
                   "&:hover": { background: "#f0f6ff" },
                 }}
               >
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.companyName}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.contactName}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.contactTitle}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.address}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.city}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.region}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.postalCode}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.country}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.phone}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.fax}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>{s.homepage}</TableCell>
+                <TableCell sx={{}}>{s.companyName}</TableCell>
+                <TableCell sx={{}}>{s.contactName}</TableCell>
+                <TableCell sx={{}}>{s.contactTitle}</TableCell>
+                <TableCell sx={{ wordBreak: 'break-word', maxWidth: 300 }}>{s.address}</TableCell>
+                <TableCell sx={{}}>{s.city}</TableCell>
+                <TableCell sx={{}}>{s.region}</TableCell>
+                <TableCell sx={{}}>{s.postalCode}</TableCell>
+                <TableCell sx={{}}>{s.country}</TableCell>
+                <TableCell sx={{}}>{s.phone}</TableCell>
+                <TableCell sx={{}}>{s.fax}</TableCell>
+                <TableCell sx={{}}>{s.homepage}</TableCell>
 
                 <TableCell align="center">
                   <Stack direction="row" spacing={1} justifyContent="center">

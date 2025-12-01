@@ -63,28 +63,31 @@ export default function Sidebar() {
   return (
     <Box
       sx={{
-        width: 220,
-        backgroundColor: '#1976d2',
-        color: '#fff',
+        width: 240,
+        backgroundColor: 'var(--primary)',
+        color: 'var(--on-primary)',
         p: 2,
         height: '100vh',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        boxShadow: 'var(--card-shadow)'
       }}
     >
-      <h3 style={{ margin: '0 0 20px 10px' }}>SIGEVE</h3>
+      <Typography variant="h6" sx={{ ml: 1, mb: 2, fontWeight: 700 }}>
+        SIGEVE
+      </Typography>
 
       {menu.map(section => (
-        <Accordion
+          <Accordion
           key={section.title}
           disableGutters
           sx={{
             backgroundColor: 'transparent',
-            color: '#fff',
+            color: 'var(--on-primary)',
             boxShadow: 'none',
             '&:before': { display: 'none' }
           }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'var(--on-primary)' }} />}>
             <Typography sx={{ fontSize: 14 }}>{section.title}</Typography>
           </AccordionSummary>
 
@@ -96,11 +99,11 @@ export default function Sidebar() {
                   onClick={() => navigate(item.path)}
                   sx={{
                     pl: 4,
-                    color: '#fff',
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+                    color: 'var(--on-primary)',
+                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.06)' }
                   }}
                 >
-                  <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'var(--on-primary)' }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItemButton>
               ))}

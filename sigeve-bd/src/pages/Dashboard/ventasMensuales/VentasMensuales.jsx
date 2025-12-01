@@ -17,8 +17,49 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  TableSortLabel,
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
+import ResponsiveChart from '../../../components/ui/ResponsiveChart';
+import DashboardSection from '../../../components/ui/DashboardSection';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+
+// helpers for sorting
+function descendingComparator(a, b, prop) {
+  let va;
+  let vb;
+  if (prop === 'mesAnyo') {
+    va = `${a.year}-${String(a.month).padStart(2, '0')}`;
+    vb = `${b.year}-${String(b.month).padStart(2, '0')}`;
+  } else {
+    va = a[prop];
+    vb = b[prop];
+  }
+  const na = parseFloat(va);
+  const nb = parseFloat(vb);
+  if (!isNaN(na) && !isNaN(nb)) return nb - na;
+  if (va < vb) return 1;
+  if (va > vb) return -1;
+  return 0;
+}
+
+function getComparatorFn(ord, prop) {
+  return ord === 'desc'
+    ? (a, b) => descendingComparator(a, b, prop)
+    : (a, b) => -descendingComparator(a, b, prop);
+}
+
+function stableSortFn(array, comparator) {
+  const stabilized = array.map((el, idx) => [el, idx]);
+  stabilized.sort((a, b) => {
+    const orderRes = comparator(a[0], b[0]);
+    if (orderRes !== 0) return orderRes;
+    return a[1] - b[1];
+  });
+  return stabilized.map(el => el[0]);
+}
 
 export default function VentasMensuales() {
   const [datos, setDatos] = useState([]);
@@ -66,7 +107,18 @@ export default function VentasMensuales() {
     return datos.filter(row => row.year === añoSeleccionado);
   }, [datos, añoSeleccionado]);
 
-  const datosPaginados = datosFiltrados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // sorting state for table
+  const [order, setOrder] = useState('desc');
+  const [orderBy, setOrderBy] = useState('totalSales');
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const sortedDatos = useMemo(() => stableSortFn(datosFiltrados, getComparatorFn(order, orderBy)), [datosFiltrados, order, orderBy]);
+  const datosPaginados = sortedDatos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   
   const xLabels = datosFiltrados.map(row => `${row.month}/${row.year}`);
   const yValues = datosFiltrados.map(row => parseFloat(row.totalSales));
@@ -79,120 +131,102 @@ export default function VentasMensuales() {
   if (loading) return <Box display="flex" justifyContent="center" alignItems="center" height="300px"><CircularProgress /></Box>;
   if (error) return <Alert severity="error">{error}</Alert>;
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, width: '100%' }}>
-      {/* LineChart */}
-      <Paper 
-        sx={{ 
-          p: 3, 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 3, 
-          minWidth: 450, 
-          maxWidth: 700, 
-          height: 460,
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: 600,
-              color: '#444',
-            }}
+  const ChartNode = (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--text)' }}>Evolución de Ventas</Typography>
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>Año</InputLabel>
+          <Select
+            value={añoSeleccionado}
+            label="Año"
+            onChange={(e) => setAñoSeleccionado(e.target.value)}
           >
-            Evolución de Ventas
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Año</InputLabel>
-            <Select
-              value={añoSeleccionado}
-              label="Año"
-              onChange={(e) => setAñoSeleccionado(e.target.value)}
-            >
-              <MenuItem value="todos">Todos</MenuItem>
-              {añosDisponibles.map(año => (
-                <MenuItem key={año} value={año}>{año}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <LineChart
-            xAxis={[{ scaleType: 'point', data: xLabels }]}
-            series={[
-              { 
-                data: yValues, 
-                label: 'Total Ventas',
-                color: '#1976d2',
-                curve: 'natural'
-              }
-            ]}
-            height={360}
-            width={600}
-            margin={{ left: 70, right: 20, top: 20, bottom: 50 }}
-          />
-        </Box>
-      </Paper>
+            <MenuItem value="todos">Todos</MenuItem>
+            {añosDisponibles.map(año => (
+              <MenuItem key={año} value={año}>{año}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
 
-      {/* Tabla */}
-      <TableContainer 
-        component={Paper} 
-        sx={{ 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 1, 
-          minWidth: 400, 
-          maxWidth: 450, 
-          height: 460, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          overflow: 'hidden',
-        }}
-      >
-        <Box sx={{ overflowY: 'auto', flex: 1 }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ background: '#1976d2' }}>
-                {['Mes/Año', 'Total Ventas'].map(title => (
-                  <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 600, py: 1.2 }}>{title}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {datosPaginados.map((row, index) => (
-                <TableRow 
-                  key={index} 
-                  sx={{ 
-                    '&:hover': { 
-                      background: '#f5f5f5',
-                    }
-                  }}
-                >
-                  <TableCell sx={{ py: 1.2, fontWeight: 500, color: '#333' }}>{row.month}/{row.year}</TableCell>
-                  <TableCell align="center" sx={{ color: '#1976d2', fontWeight: 500 }}>${row.totalSales?.toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <ResponsiveChart height={360}>
+            {({ width, height }) => (
+              <LineChart
+                xAxis={[{ scaleType: 'point', data: xLabels }]}
+                series={[
+                  {
+                    data: yValues,
+                    label: 'Total Ventas',
+                    color: 'var(--primary)',
+                    curve: 'natural'
+                  }
+                ]}
+                height={height}
+                width={width}
+                margin={{ left: 70, right: 20, top: 20, bottom: 50 }}
+              />
+            )}
+          </ResponsiveChart>
         </Box>
-        <TablePagination
-          component="div"
-          count={totalElements}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-          labelRowsPerPage="Filas:"
-          sx={{ 
-            borderTop: '1px solid #e0e0e0', 
-            flexShrink: 0,
-          }}
-        />
-      </TableContainer>
     </Box>
   );
+
+  const DetailsNode = (
+    <Box>
+      <TableContainer sx={{ maxHeight: 380 }}>
+        <Table size="small" stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell align="left" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, py: 1.6, px: 3, fontSize: '.95rem', position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }} sortDirection={orderBy === 'mesAnyo' ? order : false}>
+                <TableSortLabel sx={{ color: '#fff' }} active={orderBy === 'mesAnyo'} direction={orderBy === 'mesAnyo' ? order : 'asc'} onClick={(e) => handleRequestSort(e, 'mesAnyo')}>
+                  Mes / Año
+                </TableSortLabel>
+              </TableCell>
+              <TableCell align="center" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, py: 1.6, px: 3, fontSize: '.95rem', position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }} sortDirection={orderBy === 'totalSales' ? order : false}>
+                <TableSortLabel sx={{ color: '#fff' }} active={orderBy === 'totalSales'} direction={orderBy === 'totalSales' ? order : 'asc'} onClick={(e) => handleRequestSort(e, 'totalSales')}>
+                  Total ventas (USD)
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {datosPaginados.map((row, index) => (
+              <TableRow
+                key={index}
+                sx={{ transition: 'background 0.15s ease', '&:hover': { background: '#f8fafc' }, '&:nth-of-type(odd)': { background: 'transparent' } }}
+              >
+                <TableCell sx={{ py: 1.2, fontWeight: 600, color: 'var(--text)' }}>{row.month}/{row.year}</TableCell>
+                <TableCell align="center" sx={{ color: 'var(--primary)', fontWeight: 700 }}>${row.totalSales?.toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination
+        component="div"
+        count={totalElements}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25]}
+        labelRowsPerPage="Filas:"
+        sx={{ borderTop: '1px solid rgba(0,0,0,0.06)', mt: 1 }}
+      />
+    </Box>
+  );
+
+  const stats = [
+    { title: 'Ingresos (hoy)', value: '$1,240', delta: '4.2%', icon: <AttachMoneyIcon />, color: 'var(--primary)' },
+    { title: 'Mes actual', value: '$32,100', delta: '2.1%', icon: <CalendarMonthIcon />, color: '#10b981' },
+    { title: 'Crecimiento', value: '5.2%', delta: '▲', icon: <TrendingUpIcon />, color: '#6b7280' }
+  ];
+
+  return (
+    <DashboardSection title="Evolución de Ventas" subtitle="Resumen mensual y detalles" stats={stats} ChartNode={ChartNode} DetailsNode={DetailsNode} />
+  );
 }
+

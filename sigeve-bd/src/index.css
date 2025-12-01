@@ -1,11 +1,22 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Theme variables */
+  --primary: #1976d2;
+  --primary-700: #1565c0;
+  --accent: #646cff;
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --card-bg: #ffffff;
+  --muted: #6b7280;
+  --text: #111827;
+  --on-primary: #ffffff;
+  --card-shadow: 0 6px 18px rgba(16,24,40,0.06);
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--text);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,10 +35,30 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* App container to center content */
+.app-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 0.75rem;
 }
 
 h1 {
@@ -56,13 +87,6 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    /* same variables for light mode (can override for dark mode later) */
   }
 }

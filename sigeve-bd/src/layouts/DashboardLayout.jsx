@@ -9,8 +9,10 @@ export default function DashboardLayout() {
       <Sidebar />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Navbar />
-        <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f9f9f9' }}>
-          <Outlet />
+        <Box sx={{ flexGrow: 1, p: 0, backgroundColor: 'transparent' }}>
+          <div className="app-container">
+            <Outlet />
+          </div>
         </Box>
       </Box>
     </Box>

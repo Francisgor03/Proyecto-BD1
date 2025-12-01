@@ -14,6 +14,11 @@ import {
   Alert,
 } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
+import DashboardSection from '../../../components/ui/DashboardSection';
+import ResponsiveChart from '../../../components/ui/ResponsiveChart';
+import CategoryIcon from '@mui/icons-material/Category';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import PeopleIcon from '@mui/icons-material/People';
 
 export default function VentasCategoria() {
   const [datos, setDatos] = useState([]);
@@ -46,32 +51,10 @@ export default function VentasCategoria() {
 
   if (error) return <Alert severity="error">{error}</Alert>;
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, width: '100%' }}>
-      {/* PieChart */}
-      <Paper 
-        sx={{ 
-          p: 3, 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 3, 
-          minWidth: 450, 
-          maxWidth: 700, 
-          height: 460,
-        }}
-      >
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            mb: 2, 
-            fontWeight: 600,
-            color: '#444',
-          }}
-        >
-          Distribución de Ventas
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  const ChartNode = (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <ResponsiveChart height={350}>
+        {({ width, height }) => (
           <PieChart
             series={[{
               data: datos.map((row, index) => ({
@@ -80,57 +63,53 @@ export default function VentasCategoria() {
                 label: row.nombreCategoria,
               })),
               innerRadius: 50,
-              outerRadius: 150,
+              outerRadius: Math.min(160, Math.floor(height / 1.5)),
               paddingAngle: 2,
-              cornerRadius: 5,
+              cornerRadius: 6,
             }]}
-            height={360}
-            width={400}
+            height={height}
+            width={Math.min(width, 600)}
             slotProps={{ legend: { hidden: false, position: 'right' } }}
           />
-        </Box>
-      </Paper>
+        )}
+      </ResponsiveChart>
+    </Box>
+  );
 
-      {/* Tabla */}
-      <TableContainer
-        component={Paper}
-        sx={{ 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 1, 
-          minWidth: 300, 
-          maxWidth: 350, 
-          height: 460, 
-          overflow: 'auto',
-        }}
-      >
-        <Table size="small">
+  const DetailsNode = (
+    <Box>
+      <TableContainer sx={{ maxHeight: 380 }}>
+        <Table size="small" stickyHeader>
           <TableHead>
-            <TableRow sx={{ background: '#1976d2' }}>
-              {['Categoría', 'Pedidos', 'Unidades', 'Precio Prom.'].map((title) => (
-                <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 600, fontSize: '.85rem', py: 1.2 }}>
-                  {title}
-                </TableCell>
-              ))}
+            <TableRow>
+              <TableCell align="left" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, fontSize: '.95rem', py: 1.6, px: 3, position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Categoría</TableCell>
+              <TableCell align="center" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, fontSize: '.95rem', py: 1.6, px: 3, position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Pedidos</TableCell>
+              <TableCell align="center" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, fontSize: '.95rem', py: 1.6, px: 3, position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Unidades</TableCell>
+              <TableCell align="center" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, fontSize: '.95rem', py: 1.6, px: 3, position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Precio promedio (USD)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {datos.map((row, index) => (
-              <TableRow key={index} sx={{
-                '&:hover': { 
-                  background: '#f5f5f5',
-                },
-              }}>
-                <TableCell sx={{ py: 1.2, fontWeight: 500, color: '#333' }}>{row.nombreCategoria}</TableCell>
-                <TableCell align="center" sx={{ color: '#666' }}>{row.totalPedidos}</TableCell>
-                <TableCell align="center" sx={{ color: '#666' }}>{row.totalUnidadesVendidas}</TableCell>
-                <TableCell align="center" sx={{ color: '#1976d2', fontWeight: 500 }}>${row.precioPromedioVenta?.toFixed(2)}</TableCell>
+              <TableRow key={index} sx={{ transition: 'background 0.15s', '&:hover': { background: '#f8fafc' } }}>
+                <TableCell sx={{ py: 1, fontWeight: 600, color: 'var(--text)' }}>{row.nombreCategoria}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 600 }}>{row.totalPedidos}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 600 }}>{row.totalUnidadesVendidas}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 600, color: 'var(--primary)' }}>${row.precioPromedioVenta?.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
     </Box>
+  );
+
+  const stats = [
+    { title: 'Categorías', value: datos.length, delta: '', icon: <CategoryIcon />, color: 'var(--primary)' },
+    { title: 'Unidades', value: datos.reduce((s, r) => s + (r.totalUnidadesVendidas || 0), 0), delta: '', icon: <PieChartIcon />, color: '#6b7280' },
+    { title: 'Clientes', value: datos.reduce((s, r) => s + (r.totalPedidos || 0), 0), delta: '', icon: <PeopleIcon />, color: '#10b981' }
+  ];
+
+  return (
+    <DashboardSection title="Ventas por Categoría" subtitle="Distribución y totales" stats={stats} ChartNode={ChartNode} DetailsNode={DetailsNode} />
   );
 }

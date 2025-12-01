@@ -15,6 +15,11 @@ import {
   TablePagination,
 } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
+import DashboardSection from '../../../components/ui/DashboardSection';
+import ResponsiveChart from '../../../components/ui/ResponsiveChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PeopleIcon from '@mui/icons-material/People';
+import StarIcon from '@mui/icons-material/Star';
 
 export default function ProductosMasVendidos() {
   const [datos, setDatos] = useState([]);
@@ -55,101 +60,66 @@ export default function ProductosMasVendidos() {
   const productNames = top10.map(row => row.productName);
   const unitsSold = top10.map(row => parseInt(row.totalUnitsSold));
 
-  if (loading) return <Box display="flex" justifyContent="center" alignItems="center" height="300px"><CircularProgress /></Box>;
-  if (error) return <Alert severity="error">{error}</Alert>;
+    if (loading) return <Box display="flex" justifyContent="center" alignItems="center" height="300px"><CircularProgress /></Box>;
+    if (error) return <Alert severity="error">{error}</Alert>;
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, width: '100%' }}>
-      {/* BarChart */}
-      <Paper 
-        sx={{ 
-          p: 3, 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 3, 
-          minWidth: 450, 
-          maxWidth: 800, 
-          height: 490,
-        }}
-      >
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            mb: 2, 
-            fontWeight: 600,
-            color: '#444',
-          }}
-        >
-          Top 10 Productos
-        </Typography>
+    const ChartNode = (
+      <Box>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 700, color: 'var(--text)' }}>Top 10 Productos</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <BarChart
-            xAxis={[{ 
-              scaleType: 'band', 
-              data: productNames,
-              tickLabelStyle: {
-                angle: -45,
-                textAnchor: 'end',
-                fontSize: 11,
-              }
-            }]}
-            series={[
-              { 
-                data: unitsSold, 
-                label: 'Unidades Vendidas',
-                color: '#1976d2',
-              }
-            ]}
-            height={400}
-            width={700}
-            margin={{ left: 60, right: 20, top: 20, bottom: 120 }}
-          />
+          <ResponsiveChart height={400}>
+            {({ width, height }) => (
+              <BarChart
+                xAxis={[{
+                  scaleType: 'band',
+                  data: productNames,
+                  tickLabelStyle: {
+                    angle: -45,
+                    textAnchor: 'end',
+                    fontSize: 11,
+                  }
+                }]}
+                series={[
+                  {
+                    data: unitsSold,
+                    label: 'Unidades Vendidas',
+                    color: 'var(--primary)',
+                  }
+                ]}
+                height={height}
+                width={width}
+                margin={{ left: 60, right: 20, top: 20, bottom: 120 }}
+              />
+            )}
+          </ResponsiveChart>
         </Box>
-      </Paper>
+      </Box>
+    );
 
-      {/* Tabla */}
-      <TableContainer 
-        component={Paper} 
-        sx={{ 
-          borderRadius: 2, 
-          background: '#fff',
-          border: '1px solid #e0e0e0',
-          flex: 1, 
-          minWidth: 400, 
-          maxWidth: 450, 
-          height: 490, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          overflow: 'hidden',
-        }}
-      >
-        <Box sx={{ overflowY: 'auto', flex: 1 }}>
-          <Table size="small">
+    const DetailsNode = (
+      <Box>
+        <TableContainer sx={{ maxHeight: 380 }}>
+          <Table size="small" stickyHeader>
             <TableHead>
-              <TableRow sx={{ background: '#1976d2' }}>
-                {['Producto', 'Unidades'].map(title => (
-                  <TableCell key={title} align="center" sx={{ color: '#fff', fontWeight: 600, py: 1.2 }}>{title}</TableCell>
-                ))}
+              <TableRow>
+                <TableCell align="left" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, py: 1.6, px: 3, fontSize: '.95rem', position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Producto</TableCell>
+                <TableCell align="center" sx={{ background: 'var(--primary-700)', color: '#fff', fontWeight: 700, py: 1.6, px: 3, fontSize: '.95rem', position: 'sticky', top: 0, zIndex: 3, boxShadow: '0 2px 6px rgba(15,23,42,0.06)' }}>Unidades vendidas</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {datosPaginados.map((row, index) => (
-                <TableRow 
-                  key={index} 
-                  sx={{ 
-                    '&:hover': { 
-                      background: '#f5f5f5',
-                    }
-                  }}
+                <TableRow
+                  key={index}
+                  sx={{ transition: 'background 0.15s ease', '&:hover': { background: '#f8fafc' }, '&:nth-of-type(odd)': { background: 'transparent' } }}
                 >
-                  <TableCell sx={{ py: 1.2, fontWeight: 500, color: '#333' }}>{row.productName}</TableCell>
-                  <TableCell align="center" sx={{ color: '#1976d2', fontWeight: 500 }}>{row.totalUnitsSold}</TableCell>
+                  <TableCell sx={{ py: 1.2, fontWeight: 600, color: 'var(--text)' }}>{row.productName}</TableCell>
+                  <TableCell align="center" sx={{ color: 'var(--primary)', fontWeight: 700 }}>{row.totalUnitsSold}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </Box>
+        </TableContainer>
+
         <TablePagination
           component="div"
           count={totalElements}
@@ -159,12 +129,18 @@ export default function ProductosMasVendidos() {
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[5, 10, 25]}
           labelRowsPerPage="Filas:"
-          sx={{ 
-            borderTop: '1px solid #e0e0e0', 
-            flexShrink: 0,
-          }}
+          sx={{ borderTop: '1px solid rgba(0,0,0,0.06)', mt: 1 }}
         />
-      </TableContainer>
-    </Box>
-  );
+      </Box>
+    );
+
+    const stats = [
+      { title: 'Unidades totales', value: `${unitsSold.reduce((a,b)=>a+b,0)}`, delta: '', icon: <BarChartIcon />, color: 'var(--primary)' },
+      { title: 'Productos', value: datos.length, delta: '', icon: <PeopleIcon />, color: '#6b7280' },
+      { title: 'Top', value: productNames[0] ?? '-', delta: '', icon: <StarIcon />, color: '#f59e0b' }
+    ];
+
+    return (
+      <DashboardSection title="Productos más vendidos" subtitle="Top 10 productos por unidades vendidas" stats={stats} ChartNode={ChartNode} DetailsNode={DetailsNode} />
+    );
 }
