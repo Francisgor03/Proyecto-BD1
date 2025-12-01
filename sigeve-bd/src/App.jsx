@@ -6,7 +6,7 @@ import { es } from 'date-fns/locale';
 function App() {
  return (
    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-     <AppRoutes />;
+     <AppRoutes />
    </LocalizationProvider>
  );
 }

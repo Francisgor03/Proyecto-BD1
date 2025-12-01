@@ -5,12 +5,30 @@ import Navbar from '../components/NavBar';
 
 export default function DashboardLayout() {
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh',minWidth: '100vw' }}>
+    <Box sx={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       <Sidebar />
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+
+      {/* CONTENIDO */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}
+      >
         <Navbar />
-        <Box sx={{ flexGrow: 1, p: 0, backgroundColor: 'transparent' }}>
-          <div className="app-container">
+
+        {/* ÁREA SCROLLEABLE */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            p: 0
+          }}
+        >
+          <div className='app-container'>
             <Outlet />
           </div>
         </Box>

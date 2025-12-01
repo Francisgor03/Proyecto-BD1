@@ -68,16 +68,18 @@ export default function Sidebar() {
         color: 'var(--on-primary)',
         p: 2,
         height: '100vh',
+        position: 'sticky', 
+        top: 0, 
         overflowY: 'auto',
         boxShadow: 'var(--card-shadow)'
       }}
     >
-      <Typography variant="h6" sx={{ ml: 1, mb: 2, fontWeight: 700 }}>
+      <Typography variant='h6' sx={{ ml: 1, mb: 2, fontWeight: 700 }}>
         SIGEVE
       </Typography>
 
       {menu.map(section => (
-          <Accordion
+        <Accordion
           key={section.title}
           disableGutters
           sx={{
