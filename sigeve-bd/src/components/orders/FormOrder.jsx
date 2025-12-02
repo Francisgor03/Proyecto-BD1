@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Grid,
-} from "@mui/material";
-import { orderApi } from "../../services/api";
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { orderApi } from '../../services/api';
+import { useAlert } from '../../utils/useAlert';
 
 export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
+  const showAlert = useAlert();
+
   const [form, setForm] = useState({
-    orderID: "",
-    productID: "",
-    orderDate: "",
-    requiredDate: "",
-    shippedDate: "",
-    shipVia: "",
-    freight: "",
-    shipName: "",
-    shipAddress: "",
-    shipCity: "",
-    shipRegion: "",
-    shipPostalCode: "",
-    shipCountry: "",
+    orderID: '',
+    productID: '',
+    orderDate: '',
+    requiredDate: '',
+    shippedDate: '',
+    shipVia: '',
+    freight: '',
+    shipName: '',
+    shipAddress: '',
+    shipCity: '',
+    shipRegion: '',
+    shipPostalCode: '',
+    shipCountry: ''
   });
 
   useEffect(() => {
@@ -32,39 +27,43 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
       setForm(orderToEdit);
     } else {
       setForm({
-        orderID: "",
-        productID: "",
-        orderDate: "",
-        requiredDate: "",
-        shippedDate: "",
-        shipVia: "",
-        freight: "",
-        shipName: "",
-        shipAddress: "",
-        shipCity: "",
-        shipRegion: "",
-        shipPostalCode: "",
-        shipCountry: "",
+        orderID: '',
+        productID: '',
+        orderDate: '',
+        requiredDate: '',
+        shippedDate: '',
+        shipVia: '',
+        freight: '',
+        shipName: '',
+        shipAddress: '',
+        shipCity: '',
+        shipRegion: '',
+        shipPostalCode: '',
+        shipCountry: ''
       });
     }
   }, [orderToEdit]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (orderToEdit) {
         await orderApi.update(orderToEdit.id, form); // seguimos usando el ID interno para editar
+        showAlert('Orden actualizada correctamente', 'success');
       } else {
         await orderApi.create(form); // el backend generará el ID automáticamente
+        showAlert('Orden creada correctamente', 'success');
       }
-      onSave(); // para refrescar la tabla o lista de clientes
-      onClose();
+
+      onSave(); // refresca tabla
+      onClose(); // cierra modal
     } catch (error) {
-      console.error("Error al guardar la orden:", error);
+      console.error('Error al guardar la orden:', error);
+      showAlert('Ocurrió un error al guardar la orden', 'error');
     }
   };
 
@@ -72,174 +71,172 @@ export default function FormOrder({ open, onClose, orderToEdit, onSave }) {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth='sm'
       PaperProps={{
-        sx: { borderRadius: 3, p: 2, minWidth: 400, background: "#fff" },
+        sx: { borderRadius: 3, p: 2, minWidth: 400, background: '#fff' }
       }}
     >
-      <DialogTitle>
-        {orderToEdit ? "Editar Orden" : "Agregar Orden"}
-      </DialogTitle>
+      <DialogTitle>{orderToEdit ? 'Editar Orden' : 'Agregar Orden'}</DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <div
             style={{
               maxWidth: 500,
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.35rem",
-              marginTop: "0.5rem",
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.35rem',
+              marginTop: '0.5rem'
             }}
           >
             <TextField
               fullWidth
-              name="orderID"
-              label="ID del Cliente *"
+              name='orderID'
+              label='ID del Cliente *'
               value={form.orderID}
               onChange={handleChange}
               required
-              margin="dense"
+              margin='dense'
             />
             <TextField
               fullWidth
-              name="productID"
-              label="ID del Empleado *"
+              name='productID'
+              label='ID del Empleado *'
               value={form.productID}
               onChange={handleChange}
               required
-              margin="dense"
+              margin='dense'
             />
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               <TextField
                 fullWidth
-                name="orderDate"
-                label="Fecha de Orden *"
+                name='orderDate'
+                label='Fecha de Orden *'
                 value={form.orderDate}
                 onChange={handleChange}
                 required
-                margin="dense"
-                type="date"
+                margin='dense'
+                type='date'
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
                 fullWidth
-                name="requiredDate"
-                label="Fecha Requerida *"
+                name='requiredDate'
+                label='Fecha Requerida *'
                 value={form.requiredDate}
                 onChange={handleChange}
                 required
-                margin="dense"
-                type="date"
+                margin='dense'
+                type='date'
                 InputLabelProps={{ shrink: true }}
               />
             </div>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               <TextField
                 fullWidth
-                name="shippedDate"
-                label="Fecha de Envío *"
+                name='shippedDate'
+                label='Fecha de Envío *'
                 value={form.shippedDate}
                 onChange={handleChange}
                 required
-                margin="dense"
-                type="date"
+                margin='dense'
+                type='date'
                 InputLabelProps={{ shrink: true }}
               />
               <TextField
                 fullWidth
-                name="shipVia"
-                label="Método de Envío *"
+                name='shipVia'
+                label='Método de Envío *'
                 value={form.shipVia}
                 onChange={handleChange}
                 required
-                margin="dense"
+                margin='dense'
               />
             </div>
             <TextField
               fullWidth
-              name="freight"
-              label="Costo de Envío *"
+              name='freight'
+              label='Costo de Envío *'
               value={form.freight}
               onChange={handleChange}
               required
-              margin="dense"
-              type="number"
+              margin='dense'
+              type='number'
             />
             <TextField
               fullWidth
-              name="shipName"
-              label="Nombre del destinatario"
+              name='shipName'
+              label='Nombre del destinatario'
               value={form.shipName}
               onChange={handleChange}
-              margin="dense"
+              margin='dense'
             />
             <TextField
               fullWidth
-              name="shipAddress"
-              label="Dirección de envío"
+              name='shipAddress'
+              label='Dirección de envío'
               value={form.shipAddress}
               onChange={handleChange}
-              margin="dense"
+              margin='dense'
             />
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               <TextField
                 fullWidth
-                name="shipCity"
-                label="Ciudad"
+                name='shipCity'
+                label='Ciudad'
                 value={form.shipCity}
                 onChange={handleChange}
-                margin="dense"
+                margin='dense'
               />
               <TextField
                 fullWidth
-                name="shipRegion"
-                label="Región"
+                name='shipRegion'
+                label='Región'
                 value={form.shipRegion}
                 onChange={handleChange}
-                margin="dense"
+                margin='dense'
               />
             </div>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
               <TextField
                 fullWidth
-                name="shipPostalCode"
-                label="Código Postal"
+                name='shipPostalCode'
+                label='Código Postal'
                 value={form.shipPostalCode}
                 onChange={handleChange}
-                margin="dense"
+                margin='dense'
               />
               <TextField
                 fullWidth
-                name="shipCountry"
-                label="País de Envío"
+                name='shipCountry'
+                label='País de Envío'
                 value={form.shipCountry}
                 onChange={handleChange}
-                margin="dense"
+                margin='dense'
               />
             </div>
             <Button
-              type="submit"
-              variant="contained"
-              color="primary"
+              type='submit'
+              variant='contained'
+              color='primary'
               fullWidth
               sx={{
                 mt: 2,
                 py: 1.2,
                 fontWeight: 700,
-                fontSize: "1rem",
-                borderRadius: 2,
+                fontSize: '1rem',
+                borderRadius: 2
               }}
             >
-              {orderToEdit ? "Actualizar" : "Guardar"}
+              {orderToEdit ? 'Actualizar' : 'Guardar'}
             </Button>
           </div>
         </form>
       </DialogContent>
 
-      <DialogActions sx={{ justifyContent: "flex-end", pr: 3 }}>
-        <Button onClick={onClose} color="inherit">
+      <DialogActions sx={{ justifyContent: 'flex-end', pr: 3 }}>
+        <Button onClick={onClose} color='inherit'>
           Cancelar
         </Button>
       </DialogActions>
